@@ -1,0 +1,15 @@
+{
+  "name": "com.oscar-gracian.character-movement",
+  "displayName": "OscarGracian.CharacterMovement",
+  "version": "0.2.2",
+  "unity": "2020.3",
+  "description": "A comprehensive alternative to Unity's built-in Character Controller.",
+  "keywords": [
+    "unity",
+    "unity3d",
+    "upm",
+    "utility"
+  ],
+  "homepage": "https://assetstore.unity.com/packages/tools/physics/character-movement-210215",
+  "author": "Oscar Gracián (https://assetstore.unity.com/publishers/20036)"
+}

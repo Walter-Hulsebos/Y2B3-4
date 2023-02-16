@@ -1,0 +1,20 @@
+{
+    "name": "Game.Movement",
+    "rootNamespace": "Game.Movement",
+    "references": [
+        "Unity.Mathematics",
+        "Unity.InputSystem",
+        "UltEvents",
+        "UniTask",
+        "EasyCharacterMovement.CharacterMovement"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

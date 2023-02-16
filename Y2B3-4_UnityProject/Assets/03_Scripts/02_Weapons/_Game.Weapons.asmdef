@@ -1,0 +1,19 @@
+{
+    "name": "Game.Weapons",
+    "rootNamespace": "Game.Weapons",
+    "references": [
+        "Unity.Mathematics",
+        "Unity.InputSystem",
+        "UltEvents",
+        "UniTask"
+    ],
+    "includePlatforms": [],
+    "excludePlatforms": [],
+    "allowUnsafeCode": false,
+    "overrideReferences": false,
+    "precompiledReferences": [],
+    "autoReferenced": false,
+    "defineConstraints": [],
+    "versionDefines": [],
+    "noEngineReferences": false
+}

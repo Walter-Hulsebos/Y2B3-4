@@ -1,0 +1,91 @@
+== Free Form Selection ==
+
+Press and HOLD "S" while in SceneView to start a free from selection.
+SceneView must have the input focus for this to work (aka click in there once).
+You can change the key in the settings (see "Push To Select Key").
+Press SPACE while holding S to change the selection mode.
+
+This is an EDITOR ONLY plugin.
+This plugin enhances the selection functionality
+in the SceneView of the Unity Editor. It allows you to
+do a free from selection instead of the default rectangle.
+
+Versioning will use the semantic versioning paradigm, see
+https://semver.org.
+
+= Support =
+
+If you find any errors then please write to office@kamgam.com.
+
+Please be patient, replies may take a few days. Please include
+your Asset Store Order Nr in your request.
+
+Thank you.
+
+
+= Known Issues =
+
+* The SceneView needs to have focus in order for the keyboard shortcuts to work (aka "click into the SceneView once").
+* Skinned mesh seletions are not vertex based (behave just like unitys default rect selection).
+  
+= Settings =
+
+You can find or recreate the settings file (named "FreeFormSelection Settings") through the main menu (Tools > Free Form Selection > Settings). You can move it out of the plugins folder too. That's useful to avoid losing the settings if you reimport (update) the plugin.
+
+* Enable plugin
+Enables or disables the whole plugin. Turn this off if you suspect the plugin to cause any weird behaviour (none known at the moment).
+
+* Push to select key
+Push and HOLD this key to enable the current selection mode.
+
+* Push to change mode key
+Push this key while HOLDING the 'selection key' to change the selection mode. You can also change it in the Tools menu.
+
+* Selection mode
+Defines how you will specify the selection area:
+   FreeForm = draw the outline freely
+   Edges = draw the outline edges
+   Brush = draw the selection like in paint
+
+* Brush size
+Defines how big the brush will be. Measured in scene view 2D coordinates (min. 6).
+
+* Use mouse wheel
+If enabled then you can change the brush size with the mouse wheel while selecting.
+
+* Greedy Prefab selection
+Should the whole prefab be selected if the selection area overlaps the child of a prefab (default is true).
+
+* Include UI
+Include UI elements in the selection?
+  
+* Max mesh vertices
+Do a vertex precise selection check up to this number of vertices per mesh. Otherwise bounding boxes are used.
+
+* Hide handles while selecting
+Hide the handles (transform, rotate, ...) while selecting?
+
+= License =
+Copyright (C) 2018 KAMGAM e.U. - All rights reserved (except LibTessDotNet)
+The code can only be used under the standard Unity Asset Store End User License Agreement. A Copy of the EULA APPENDIX 1 is available at http://unity3d.com/company/legal/as_terms
+
+I publish this plugin with full source code because as a developer I know how useful it is to have source code access. If you like it then please remind others to purchase the plugin.
+Don't just copy and paste it everywhere.
+Thank you
+
+LibTesstDotNet License (../Libraries/LibTesstDotNet)
+https://github.com/speps/LibTessDotNet
+** SGI FREE SOFTWARE LICENSE B (Version 2.0, Sept. 18, 2008) 
+** Copyright (C) 2011 Silicon Graphics, Inc.
+see ../Libraries/LibTesstDotNet/LICENSE.txt
+
+= Changelog =
+v1.1.0
+ * Compatibility Update for 2021 and 2022
+ * Added ASMDEFs
+
+v1.0.1
+ * BRUSH selection behaviour improved (fast drawing support in low fps circumstances).
+
+v1.0.0
+ * Initial public release
