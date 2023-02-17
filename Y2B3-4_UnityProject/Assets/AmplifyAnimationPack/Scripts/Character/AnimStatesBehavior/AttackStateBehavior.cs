@@ -11,7 +11,7 @@ namespace AmplifyAnimationPack
 		private CharacterAnimatorBehavior animBeh;
 
 		// OnStateEnter is called when a transition starts and the state machine starts to evaluate this state
-		override public void OnStateEnter( Animator animator , AnimatorStateInfo stateInfo , int layerIndex )
+		public override void OnStateEnter( Animator animator , AnimatorStateInfo stateInfo , int layerIndex )
 		{
 			if( charRef == null )
 			{
