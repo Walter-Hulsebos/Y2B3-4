@@ -14309,6 +14309,10 @@ PrefabInstance:
       propertyPath: m_AllowMSAA
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4595365295918967200, guid: 87c72335b9777a04180514cc964e2030, type: 3}
+      propertyPath: orthographic size
+      value: 10
+      objectReference: {fileID: 0}
     - target: {fileID: 4595365295918967207, guid: 87c72335b9777a04180514cc964e2030, type: 3}
       propertyPath: m_LocalPosition.x
       value: 15.000001
