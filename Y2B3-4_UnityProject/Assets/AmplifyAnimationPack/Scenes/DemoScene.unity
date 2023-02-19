@@ -1668,6 +1668,7 @@ MonoBehaviour:
   m_Script: {fileID: 1852759909}
   m_Name: 
   m_EditorClassIdentifier: 
+  m_Entries: []
 --- !u!4 &119931384
 Transform:
   m_ObjectHideFlags: 19
@@ -22649,15 +22650,15 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1609669600089360625, guid: ac6970da5d12e4f4faeaf00cb37cdd53, type: 3}
       propertyPath: m_LocalRotation.y
-      value: 0.49518225
+      value: 0.49518228
       objectReference: {fileID: 0}
     - target: {fileID: 1609669600089360625, guid: ac6970da5d12e4f4faeaf00cb37cdd53, type: 3}
       propertyPath: m_LocalRotation.z
-      value: 0.06924214
+      value: 0.069242135
       objectReference: {fileID: 0}
     - target: {fileID: 1609669600897652100, guid: ac6970da5d12e4f4faeaf00cb37cdd53, type: 3}
       propertyPath: m_LocalRotation.x
-      value: 0.0071365065
+      value: 0.007136508
       objectReference: {fileID: 0}
     - target: {fileID: 1609669600897652100, guid: ac6970da5d12e4f4faeaf00cb37cdd53, type: 3}
       propertyPath: m_LocalRotation.y
@@ -22665,7 +22666,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 1609669600897652100, guid: ac6970da5d12e4f4faeaf00cb37cdd53, type: 3}
       propertyPath: m_LocalRotation.z
-      value: -0.0041202633
+      value: -0.004120264
       objectReference: {fileID: 0}
     - target: {fileID: 1609669601344489304, guid: ac6970da5d12e4f4faeaf00cb37cdd53, type: 3}
       propertyPath: m_Follow
