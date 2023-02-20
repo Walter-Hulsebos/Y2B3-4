@@ -390,7 +390,7 @@ namespace EasyCharacterMovement
     #endregion
 
     [RequireComponent(typeof(Rigidbody), typeof(CapsuleCollider))]
-    public sealed class CharacterMovement : MonoBehaviour
+    public sealed class CharacterMotor : MonoBehaviour
     {
         #region ENUMS
 
@@ -1603,7 +1603,7 @@ namespace EasyCharacterMovement
             if (rigidbody == null)
                 return Vector3.zero;
 
-            return rigidbody.TryGetComponent(out CharacterMovement controller)
+            return rigidbody.TryGetComponent(out CharacterMotor controller)
                 ? controller.velocity
                 : rigidbody.GetPointVelocity(worldPoint);
         }
@@ -4254,7 +4254,7 @@ namespace EasyCharacterMovement
             float massRatio = 0.0f;
 
             Rigidbody otherRigidbody = inCollisionResult.rigidbody;
-            if (!otherRigidbody.isKinematic || otherRigidbody.TryGetComponent(out CharacterMovement _))
+            if (!otherRigidbody.isKinematic || otherRigidbody.TryGetComponent(out CharacterMotor _))
             {
                 float mass = rigidbody.mass;
                 massRatio = mass / (mass + inCollisionResult.rigidbody.mass);
@@ -4300,7 +4300,7 @@ namespace EasyCharacterMovement
 
                 collisionResponseCallback?.Invoke(ref collisionResult, ref characterImpulse, ref otherImpulse);
 
-                if (otherRigidbody.TryGetComponent(out CharacterMovement otherCharacter))
+                if (otherRigidbody.TryGetComponent(out CharacterMotor otherCharacter))
                 {
                     if (physicsInteractionAffectsCharacters)
                     {

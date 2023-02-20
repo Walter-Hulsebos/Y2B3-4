@@ -14,7 +14,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.PhysicsInteraction
 
         private void OnTriggerStay(Collider other)
         {
-            if (other.TryGetComponent(out CharacterMovement characterMovement))
+            if (other.TryGetComponent(out CharacterMotor characterMovement))
             {
                 if (characterMovement.isGrounded)
                     characterMovement.PauseGroundConstraint();

@@ -100,7 +100,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
         private Coroutine _lateFixedUpdateCoroutine;
 
         private Transform _transform;
-        private CharacterMovement _characterMovement;
+        private CharacterMotor _characterMotor;
 
         protected bool _isCrouching;
         protected bool _crouchButtonPressed;
@@ -133,16 +133,16 @@ namespace EasyCharacterMovement.CharacterMovementExamples
             }
         }
 
-        protected CharacterMovement characterMovement
+        protected CharacterMotor CharacterMotor
         {
             get
             {
 #if UNITY_EDITOR
-                if (_characterMovement == null)
-                    _characterMovement = GetComponent<CharacterMovement>();
+                if (_characterMotor == null)
+                    _characterMotor = GetComponent<CharacterMotor>();
 #endif
 
-                return _characterMovement;
+                return _characterMotor;
             }
         }
 
@@ -325,7 +325,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
         public virtual float GetMaxAcceleration()
         {
-            if (characterMovement.isGrounded)
+            if (CharacterMotor.isGrounded)
                 return maxAcceleration;
 
             return maxAcceleration * airControl;
@@ -333,7 +333,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
         public virtual float GetMaxBrakingDeceleration()
         {
-            return characterMovement.isGrounded ? groundBrakingDeceleration : airBrakingDeceleration;
+            return CharacterMotor.isGrounded ? groundBrakingDeceleration : airBrakingDeceleration;
         }
 
         public virtual float GetMinAnalogSpeed()
@@ -343,22 +343,22 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
         public virtual float GetFriction()
         {
-            return characterMovement.isGrounded ? groundFriction : airFriction;
+            return CharacterMotor.isGrounded ? groundFriction : airFriction;
         }
 
         public virtual Vector3 GetVelocity()
         {
-            return characterMovement.velocity;
+            return CharacterMotor.velocity;
         }
 
         public Vector3 GetPosition()
         {
-            return characterMovement.position;
+            return CharacterMotor.position;
         }
 
         public void SetPosition(Vector3 newPosition, bool updateGround)
         {
-            characterMovement.SetPosition(newPosition, updateGround);
+            CharacterMotor.SetPosition(newPosition, updateGround);
         }
 
         public Vector3 GetUpVector()
@@ -378,12 +378,12 @@ namespace EasyCharacterMovement.CharacterMovementExamples
         
         public Quaternion GetRotation()
         {
-            return characterMovement.rotation;
+            return CharacterMotor.rotation;
         }
 
         public void SetRotation(Quaternion newRotation)
         {
-            characterMovement.rotation = newRotation;
+            CharacterMotor.rotation = newRotation;
         }
 
         protected virtual void RotateTowards(Vector3 worldDirection, bool isPlanar = true)
@@ -398,8 +398,8 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
             Quaternion targetRotation = Quaternion.LookRotation(worldDirection, characterUp);
 
-            characterMovement.rotation = 
-                Quaternion.Slerp(characterMovement.rotation, targetRotation, rotationRate * Mathf.Deg2Rad * Time.deltaTime);
+            CharacterMotor.rotation = 
+                Quaternion.Slerp(CharacterMotor.rotation, targetRotation, rotationRate * Mathf.Deg2Rad * Time.deltaTime);
         }
 
         protected virtual void UpdateRotation()
@@ -447,14 +447,14 @@ namespace EasyCharacterMovement.CharacterMovementExamples
             if (!canEverCrouch)
                 return false;
 
-            return characterMovement.isGrounded;
+            return CharacterMotor.isGrounded;
         }
 
         public virtual bool CanUnCrouch()
         {
             // Check if there's room to expand capsule
 
-            bool overlapped = characterMovement.CheckHeight(unCrouchedHeight);
+            bool overlapped = CharacterMotor.CheckHeight(unCrouchedHeight);
 
             return !overlapped;
         }
@@ -466,7 +466,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
                 if (!CanCrouch())
                     return;
                 
-                characterMovement.SetHeight(crouchedHeight);
+                CharacterMotor.SetHeight(crouchedHeight);
                 _isCrouching = true;
             }
             else if (IsCrouching() && _crouchButtonPressed == false)
@@ -474,7 +474,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
                 if (!CanUnCrouch())
                     return;
 
-                characterMovement.SetHeight(unCrouchedHeight);
+                CharacterMotor.SetHeight(unCrouchedHeight);
                 _isCrouching = false;
             }
         }
@@ -526,12 +526,12 @@ namespace EasyCharacterMovement.CharacterMovementExamples
                 // On first jump,
                 // can jump if is grounded or is falling (e.g. not grounded) BUT withing post grounded time
 
-                bool canJump =  characterMovement.isGrounded ||
-                               !characterMovement.isGrounded && jumpPostGroundedTime > 0.0f && _fallingTime < jumpPostGroundedTime;
+                bool canJump =  CharacterMotor.isGrounded ||
+                               !CharacterMotor.isGrounded && jumpPostGroundedTime > 0.0f && _fallingTime < jumpPostGroundedTime;
 
                 // Missed post grounded time ?
 
-                if (!characterMovement.isGrounded && !canJump)
+                if (!CharacterMotor.isGrounded && !canJump)
                 {
                     // Missed post grounded time,
                     // can jump if have any 'in-air' jumps but the first jump counts as the in-air jump
@@ -546,7 +546,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
             // In air jump conditions
 
-            return !characterMovement.isGrounded;
+            return !CharacterMotor.isGrounded;
         }
 
         protected virtual Vector3 CalcJumpImpulse()
@@ -587,8 +587,8 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
                 // Jump!
 
-                characterMovement.PauseGroundConstraint();
-                characterMovement.LaunchCharacter(CalcJumpImpulse(), true);
+                CharacterMotor.PauseGroundConstraint();
+                CharacterMotor.LaunchCharacter(CalcJumpImpulse(), true);
                 
                 _jumpCount++;
                 _isJumping = true;
@@ -616,16 +616,16 @@ namespace EasyCharacterMovement.CharacterMovementExamples
                 float proportionalForce = Mathf.LerpUnclamped(actualGravityMagnitude, 0.0f, jumpProgress);
 
                 Vector3 proportionalJumpForce = -actualGravityDirection * proportionalForce;
-                characterMovement.AddForce(proportionalJumpForce);
+                CharacterMotor.AddForce(proportionalJumpForce);
 
                 _jumpHoldTime += Time.deltaTime;
             }
 
             // If 'falling' update falling time
 
-            if (!characterMovement.isGrounded)
+            if (!CharacterMotor.isGrounded)
                 _fallingTime += Time.deltaTime;
-            else if (!characterMovement.wasGrounded)
+            else if (!CharacterMotor.wasGrounded)
             {
                 // If landed, reset jump info
 
@@ -652,7 +652,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
             float actualBrakingFriction = useSeparateBrakingFriction ? brakingFriction : GetFriction();
 
-            characterMovement.SimpleMove(desiredVelocity, GetMaxSpeed(), GetMaxAcceleration(),
+            CharacterMotor.SimpleMove(desiredVelocity, GetMaxSpeed(), GetMaxAcceleration(),
                 GetMaxBrakingDeceleration(), GetFriction(), actualBrakingFriction, GetGravity());
         }
 
@@ -750,7 +750,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
             // Cache components
 
             _transform = GetComponent<Transform>();
-            _characterMovement = GetComponent<CharacterMovement>();
+            _characterMotor = GetComponent<CharacterMotor>();
 
             // By default enable late fixed update
             
@@ -758,11 +758,11 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
             // Enable platform and physics interactions
             
-            characterMovement.impartPlatformMovement = true;
-            characterMovement.impartPlatformRotation = true;
-            characterMovement.impartPlatformVelocity = true;
+            CharacterMotor.impartPlatformMovement = true;
+            CharacterMotor.impartPlatformRotation = true;
+            CharacterMotor.impartPlatformVelocity = true;
 
-            characterMovement.enablePhysicsInteraction = true;
+            CharacterMotor.enablePhysicsInteraction = true;
         }
 
         protected virtual void OnStart()

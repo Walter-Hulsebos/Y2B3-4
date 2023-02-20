@@ -22,13 +22,13 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
         public Vector3 gravity = Vector3.down * 9.81f;
 
-        private CharacterMovement _characterMovement;
+        private CharacterMotor _characterMotor;
 
         private Vector3 _movementDirection;
 
         private void Awake()
         {
-            _characterMovement = GetComponent<CharacterMovement>();
+            _characterMotor = GetComponent<CharacterMotor>();
         }
 
         private void Update()
@@ -50,26 +50,26 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
             // Jump
             
-            if (_characterMovement.isGrounded && Input.GetButton($"Jump"))
+            if (_characterMotor.isGrounded && Input.GetButton($"Jump"))
             {
-                _characterMovement.PauseGroundConstraint();
-                _characterMovement.LaunchCharacter(Vector3.up * jumpImpulse, true);
+                _characterMotor.PauseGroundConstraint();
+                _characterMotor.LaunchCharacter(Vector3.up * jumpImpulse, true);
             }
 
             // Rotate towards movement direction
             
-            _characterMovement.RotateTowards(_movementDirection, rotationRate * Time.deltaTime);
+            _characterMotor.RotateTowards(_movementDirection, rotationRate * Time.deltaTime);
 
             // Perform movement
             
             Vector3 desiredVelocity = _movementDirection * maxSpeed;
 
-            float actualAcceleration = _characterMovement.isGrounded ? acceleration : acceleration * airControl;
-            float actualDeceleration = _characterMovement.isGrounded ? deceleration : 0.0f;
+            float actualAcceleration = _characterMotor.isGrounded ? acceleration : acceleration * airControl;
+            float actualDeceleration = _characterMotor.isGrounded ? deceleration : 0.0f;
 
-            float actualFriction = _characterMovement.isGrounded ? groundFriction : airFriction;
+            float actualFriction = _characterMotor.isGrounded ? groundFriction : airFriction;
 
-            _characterMovement.SimpleMove(desiredVelocity, maxSpeed, actualAcceleration, actualDeceleration,
+            _characterMotor.SimpleMove(desiredVelocity, maxSpeed, actualAcceleration, actualDeceleration,
                 actualFriction, actualFriction, gravity);
         }
     }

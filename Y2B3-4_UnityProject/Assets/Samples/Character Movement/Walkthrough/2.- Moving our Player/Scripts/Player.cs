@@ -39,7 +39,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.MovingOurPlayer
         /// Cached CharacterMovement component.
         /// </summary>
 
-        public CharacterMovement characterMovement { get; private set; }
+        public CharacterMotor CharacterMotor { get; private set; }
 
         /// <summary>
         /// Desired movement direction vector in world-space.
@@ -82,7 +82,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.MovingOurPlayer
         {
             // Rotate towards character's movement direction
 
-            characterMovement.RotateTowards(movementDirection, rotationRate * Time.deltaTime);
+            CharacterMotor.RotateTowards(movementDirection, rotationRate * Time.deltaTime);
         }
 
         /// <summary>
@@ -91,7 +91,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.MovingOurPlayer
 
         private void GroundedMovement(Vector3 desiredVelocity)
         {
-            characterMovement.velocity = Vector3.Lerp(characterMovement.velocity, desiredVelocity,
+            CharacterMotor.velocity = Vector3.Lerp(CharacterMotor.velocity, desiredVelocity,
                 1f - Mathf.Exp(-groundFriction * Time.deltaTime));
         }
 
@@ -103,14 +103,14 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.MovingOurPlayer
         {
             // Current character's velocity
 
-            Vector3 velocity = characterMovement.velocity;
+            Vector3 velocity = CharacterMotor.velocity;
 
             // If moving into non-walkable ground, limit its contribution.
             // Allow movement parallel, but not into it because that may push us up.
             
-            if (characterMovement.isOnGround && Vector3.Dot(desiredVelocity, characterMovement.groundNormal) < 0.0f)
+            if (CharacterMotor.isOnGround && Vector3.Dot(desiredVelocity, CharacterMotor.groundNormal) < 0.0f)
             {
-                Vector3 groundNormal = characterMovement.groundNormal;
+                Vector3 groundNormal = CharacterMotor.groundNormal;
                 Vector3 groundNormal2D = groundNormal.onlyXZ().normalized;
 
                 desiredVelocity = desiredVelocity.projectedOnPlane(groundNormal2D);
@@ -140,7 +140,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.MovingOurPlayer
 
             // Update character's velocity
 
-            characterMovement.velocity = velocity;
+            CharacterMotor.velocity = velocity;
         }
 
         /// <summary>
@@ -155,14 +155,14 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.MovingOurPlayer
 
             // Update character’s velocity based on its grounding status
 
-            if (characterMovement.isGrounded)
+            if (CharacterMotor.isGrounded)
                 GroundedMovement(desiredVelocity);
             else
                 NotGroundedMovement(desiredVelocity);
 
             // Perform movement using character's current velocity
 
-            characterMovement.Move();
+            CharacterMotor.Move();
         }
 
         #endregion
@@ -171,7 +171,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.MovingOurPlayer
 
         private void Awake()
         {
-            characterMovement = GetComponent<CharacterMovement>();
+            CharacterMotor = GetComponent<CharacterMotor>();
         }
 
         private void Update()

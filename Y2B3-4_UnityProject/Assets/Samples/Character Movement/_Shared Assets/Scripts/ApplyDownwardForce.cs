@@ -6,13 +6,13 @@ namespace EasyCharacterMovement.CharacterMovementDemo
     {
         public float forceMagnitude = 1f;
 
-        private CharacterMovement _characterMovement;
+        private CharacterMotor _characterMotor;
         private bool _isCharacterMovementNull;
 
         private void Awake()
         {
-            _characterMovement = GetComponent<CharacterMovement>();
-            _isCharacterMovementNull = _characterMovement == null;
+            _characterMotor = GetComponent<CharacterMotor>();
+            _isCharacterMovementNull = _characterMotor == null;
         }
 
         private void FixedUpdate()
@@ -20,25 +20,25 @@ namespace EasyCharacterMovement.CharacterMovementDemo
             if (_isCharacterMovementNull)
                 return;
 
-            bool hasLanded = !_characterMovement.wasOnGround && _characterMovement.isGrounded;
+            bool hasLanded = !_characterMotor.wasOnGround && _characterMotor.isGrounded;
             if (hasLanded)
             {
                 // On Landed add landing force
 
-                Rigidbody groundRigidbody = _characterMovement.groundRigidbody;
+                Rigidbody groundRigidbody = _characterMotor.groundRigidbody;
                 if (groundRigidbody)
                 {
-                    groundRigidbody.AddForceAtPosition(_characterMovement.landedVelocity * Physics.gravity.magnitude,
-                        _characterMovement.position);
+                    groundRigidbody.AddForceAtPosition(_characterMotor.landedVelocity * Physics.gravity.magnitude,
+                        _characterMotor.position);
                 }
             }
-            else if (_characterMovement.isGrounded)
+            else if (_characterMotor.isGrounded)
             {
                 // If standing, apply downward force
 
-                Rigidbody groundRigidbody = _characterMovement.groundRigidbody;
+                Rigidbody groundRigidbody = _characterMotor.groundRigidbody;
                 if (groundRigidbody)
-                    groundRigidbody.AddForceAtPosition(Vector3.down * forceMagnitude, _characterMovement.position);
+                    groundRigidbody.AddForceAtPosition(Vector3.down * forceMagnitude, _characterMotor.position);
             }
         }
     }

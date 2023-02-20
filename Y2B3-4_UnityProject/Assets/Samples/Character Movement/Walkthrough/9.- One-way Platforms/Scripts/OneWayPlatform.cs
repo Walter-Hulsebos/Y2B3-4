@@ -20,7 +20,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.OneWayPlatforms
             // If the entered collider is using the CharacterMovement component,
             // make the character ignore the platform collider
 
-            if (other.TryGetComponent(out CharacterMovement characterMovement))
+            if (other.TryGetComponent(out CharacterMotor characterMovement))
                 characterMovement.IgnoreCollision(platform);
         }
 
@@ -28,7 +28,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.OneWayPlatforms
         {
             // Resume collisions against the platform when character leaves the trigger volume
 
-            if (other.TryGetComponent(out CharacterMovement characterMovement))
+            if (other.TryGetComponent(out CharacterMotor characterMovement))
                 characterMovement.IgnoreCollision(platform, false);
         }
     }

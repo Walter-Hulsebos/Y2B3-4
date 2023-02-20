@@ -14,23 +14,23 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.Forces
 
         // Cached CharacterMovement component
 
-        private CharacterMovement characterMovement { get; set; }
+        private CharacterMotor CharacterMotor { get; set; }
 
         private void OnTriggerEnter(Collider other)
         {
             // Cache CharacterMovement (if any)
 
-            characterMovement = other.GetComponent<CharacterMovement>();
+            CharacterMotor = other.GetComponent<CharacterMotor>();
         }
 
         private void OnTriggerExit(Collider other)
         {
             // If our cached character leaves the trigger, remove cached CharacterController
 
-            if (other.TryGetComponent(out CharacterMovement component) &&
-                characterMovement.gameObject == component.gameObject)
+            if (other.TryGetComponent(out CharacterMotor component) &&
+                CharacterMotor.gameObject == component.gameObject)
             {
-                characterMovement = null;
+                CharacterMotor = null;
             }
         }
 
@@ -38,16 +38,16 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.Forces
         {
             // If a character is inside ForceField trigger area, add force!
 
-            if (characterMovement)
+            if (CharacterMotor)
             {
                 // If the character is grounded, pause ground constraint so it can leave the ground
 
-                if (characterMovement.isGrounded)
-                    characterMovement.PauseGroundConstraint();
+                if (CharacterMotor.isGrounded)
+                    CharacterMotor.PauseGroundConstraint();
 
                 // Add continuous force
                 
-                characterMovement.AddForce(transform.up * forceMagnitude, forceMode);
+                CharacterMotor.AddForce(transform.up * forceMagnitude, forceMode);
             }
         }
     }

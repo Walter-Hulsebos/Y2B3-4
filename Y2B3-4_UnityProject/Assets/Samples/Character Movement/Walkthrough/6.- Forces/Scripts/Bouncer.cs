@@ -18,7 +18,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.Forces
         {
             // Check if the entered collider is using the CharacterMovement component
 
-            if (other.TryGetComponent(out CharacterMovement characterMovement))
+            if (other.TryGetComponent(out CharacterMotor characterMovement))
             {
                 // If necessary, temporarily disable the character's ground constraint so it leave the ground
 

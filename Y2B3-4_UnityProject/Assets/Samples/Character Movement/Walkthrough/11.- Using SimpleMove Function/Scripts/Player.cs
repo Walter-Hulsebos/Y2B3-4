@@ -80,7 +80,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
         /// Cached CharacterMovement component.
         /// </summary>
 
-        public CharacterMovement characterMovement { get; private set; }
+        public CharacterMotor CharacterMotor { get; private set; }
 
         /// <summary>
         /// Desired movement direction vector in world-space.
@@ -129,7 +129,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
             // Determine if the character has landed
 
-            if (!characterMovement.wasOnGround && foundGround.isWalkableGround)
+            if (!CharacterMotor.wasOnGround && foundGround.isWalkableGround)
             {
                 Debug.Log("Landed!");
             }
@@ -177,7 +177,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
         private float GetMaxSpeed()
         {
-            if (characterMovement.isGrounded)
+            if (CharacterMotor.isGrounded)
                 return isCrouching ? maxSpeed * crouchingSpeedModifier : maxSpeed;
 
             return maxSpeed;
@@ -189,7 +189,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
         private float GetMaxAcceleration()
         {
-            return characterMovement.isGrounded ? maxAcceleration : maxAcceleration * airControl;
+            return CharacterMotor.isGrounded ? maxAcceleration : maxAcceleration * airControl;
         }
 
         /// <summary>
@@ -198,7 +198,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
         private float GetBrakingDeceleration()
         {
-            return characterMovement.isGrounded ? groundBrakingDeceleration : airBrakingDeceleration;
+            return CharacterMotor.isGrounded ? groundBrakingDeceleration : airBrakingDeceleration;
         }
 
         /// <summary>
@@ -207,7 +207,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
         private float GetFriction()
         {
-            return characterMovement.isGrounded ? groundFriction : airFriction;
+            return CharacterMotor.isGrounded ? groundFriction : airFriction;
         }
 
         /// <summary>
@@ -218,7 +218,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
         {
             // Rotate towards character's movement direction
 
-            characterMovement.RotateTowards(movementDirection, rotationRate * Time.deltaTime);
+            CharacterMotor.RotateTowards(movementDirection, rotationRate * Time.deltaTime);
         }
         
         /// <summary>
@@ -238,7 +238,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
                 // Set capsule crouching height
 
-                characterMovement.SetHeight(crouchingHeight);
+                CharacterMotor.SetHeight(crouchingHeight);
 
                 // Update Crouching state
 
@@ -253,11 +253,11 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
                 // Check if character can safely stand up
 
-                if (!characterMovement.CheckHeight(standingHeight))
+                if (!CharacterMotor.CheckHeight(standingHeight))
                 {
                     // Character can safely stand up, set capsule standing height
 
-                    characterMovement.SetHeight(standingHeight);
+                    CharacterMotor.SetHeight(standingHeight);
 
                     // Update crouching state
 
@@ -272,17 +272,17 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
         private void Jumping()
         {
-            if (jump && characterMovement.isGrounded)
+            if (jump && CharacterMotor.isGrounded)
             {
                 // Pause ground constraint so character can jump off ground
 
-                characterMovement.PauseGroundConstraint();
+                CharacterMotor.PauseGroundConstraint();
 
                 // perform the jump
 
                 Vector3 jumpVelocity = Vector3.up * jumpImpulse;
 
-                characterMovement.LaunchCharacter(jumpVelocity, true);
+                CharacterMotor.LaunchCharacter(jumpVelocity, true);
             }
         }
 
@@ -310,7 +310,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
             
             Vector3 desiredVelocity = movementDirection * actualMaxSpeed;
 
-            characterMovement.SimpleMove(desiredVelocity, actualMaxSpeed, actualAcceleration, actualBrakingDeceleration,
+            CharacterMotor.SimpleMove(desiredVelocity, actualMaxSpeed, actualAcceleration, actualBrakingDeceleration,
                 actualFriction, actualBrakingFriction, gravity);
         }
 
@@ -332,11 +332,11 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
         {
             // Cache CharacterMovement component
 
-            characterMovement = GetComponent<CharacterMovement>();
+            CharacterMotor = GetComponent<CharacterMotor>();
 
             // Enable default physic interactions
 
-            characterMovement.enablePhysicsInteraction = true;
+            CharacterMotor.enablePhysicsInteraction = true;
         }
 
         private void OnEnable()
@@ -350,8 +350,8 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
             // Subscribe to CharacterMovement events
 
-            characterMovement.FoundGround += OnFoundGround;
-            characterMovement.Collided += OnCollided;
+            CharacterMotor.FoundGround += OnFoundGround;
+            CharacterMotor.Collided += OnCollided;
         }
 
         private void OnDisable()
@@ -363,8 +363,8 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.UsingSimpleMove
 
             // Un-Subscribe from CharacterMovement events
 
-            characterMovement.FoundGround -= OnFoundGround;
-            characterMovement.Collided -= OnCollided;
+            CharacterMotor.FoundGround -= OnFoundGround;
+            CharacterMotor.Collided -= OnCollided;
         }
 
         private IEnumerator LateFixedUpdate()

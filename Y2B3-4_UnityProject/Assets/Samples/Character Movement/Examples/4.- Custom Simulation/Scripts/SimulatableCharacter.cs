@@ -36,7 +36,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
         #region PROPERTIES
 
-        private CharacterMovement characterMovement { get; set; }
+        private CharacterMotor CharacterMotor { get; set; }
 
         #endregion
 
@@ -52,10 +52,10 @@ namespace EasyCharacterMovement.CharacterMovementExamples
             // Save pre-simulation poses,
             // and make sure the character is at its up-to-date position and rotation (NOT INTERPOLATED ONES) before simulate it
 
-            _initialFramePosition = characterMovement.updatedPosition;
-            _initialFrameRotation = characterMovement.updatedRotation;
+            _initialFramePosition = CharacterMotor.updatedPosition;
+            _initialFrameRotation = CharacterMotor.updatedRotation;
 
-            characterMovement.SetPositionAndRotation(characterMovement.updatedPosition, characterMovement.updatedRotation);
+            CharacterMotor.SetPositionAndRotation(CharacterMotor.updatedPosition, CharacterMotor.updatedRotation);
 
             // Simulate this character (e.g. update its position and rotation)
 
@@ -70,8 +70,8 @@ namespace EasyCharacterMovement.CharacterMovementExamples
         {
             // Set transform's interpolated pose
 
-            Vector3 p = Vector3.Lerp(_initialFramePosition, characterMovement.updatedPosition, interpolationFactor);
-            Quaternion q = Quaternion.Slerp(_initialFrameRotation, characterMovement.updatedRotation, interpolationFactor);
+            Vector3 p = Vector3.Lerp(_initialFramePosition, CharacterMotor.updatedPosition, interpolationFactor);
+            Quaternion q = Quaternion.Slerp(_initialFrameRotation, CharacterMotor.updatedRotation, interpolationFactor);
 
             transform.SetPositionAndRotation(p, q);
         }
@@ -84,21 +84,21 @@ namespace EasyCharacterMovement.CharacterMovementExamples
         {
             // Rotate character towards movement direction
 
-            characterMovement.RotateTowards(_movementDirection, rotationRate * deltaTime);
+            CharacterMotor.RotateTowards(_movementDirection, rotationRate * deltaTime);
 
             // Move character (e.g. update its velocity)
             
-            Vector3 velocity = characterMovement.velocity;
+            Vector3 velocity = CharacterMotor.velocity;
 
             Vector3 desiredVelocity = _movementDirection * maxSpeed;
 
-            if (characterMovement.isGrounded)
+            if (CharacterMotor.isGrounded)
                 velocity = Vector3.MoveTowards(velocity, desiredVelocity, maxAcceleration * deltaTime);
             else
             {
                 if (desiredVelocity != Vector3.zero)
                 {
-                    Vector3 groundNormal = characterMovement.groundNormal;
+                    Vector3 groundNormal = CharacterMotor.groundNormal;
                     if (groundNormal != Vector3.zero)
                     {
                         Vector3 groundNormal2D = groundNormal.onlyXZ();
@@ -118,20 +118,20 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
             // jump
 
-            if (_jumpButtonPressed && characterMovement.isGrounded)
+            if (_jumpButtonPressed && CharacterMotor.isGrounded)
             {
                 _jumpButtonPressed = false;
 
                 Vector3 characterUp = transform.up;
-                float actualJumpImpulse = Mathf.Max(Vector3.Dot(characterMovement.velocity, characterUp), jumpImpulse);
+                float actualJumpImpulse = Mathf.Max(Vector3.Dot(CharacterMotor.velocity, characterUp), jumpImpulse);
 
-                characterMovement.PauseGroundConstraint();
-                characterMovement.LaunchCharacter(characterUp * actualJumpImpulse, true);
+                CharacterMotor.PauseGroundConstraint();
+                CharacterMotor.LaunchCharacter(characterUp * actualJumpImpulse, true);
             }
 
             // Do movement
 
-            characterMovement.Move(velocity, deltaTime);
+            CharacterMotor.Move(velocity, deltaTime);
         }
 
         private void HandleInput()
@@ -156,14 +156,14 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
         private void Awake()
         {
-            characterMovement = GetComponent<CharacterMovement>();
-            characterMovement.interpolation = RigidbodyInterpolation.None;
+            CharacterMotor = GetComponent<CharacterMotor>();
+            CharacterMotor.interpolation = RigidbodyInterpolation.None;
 
-            characterMovement.enablePhysicsInteraction = false;
+            CharacterMotor.enablePhysicsInteraction = false;
 
-            characterMovement.impartPlatformMovement = true;
-            characterMovement.impartPlatformRotation = true;
-            characterMovement.impartPlatformVelocity = true;
+            CharacterMotor.impartPlatformMovement = true;
+            CharacterMotor.impartPlatformRotation = true;
+            CharacterMotor.impartPlatformVelocity = true;
         }
 
         private void OnEnable()

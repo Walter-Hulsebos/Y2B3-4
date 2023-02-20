@@ -25,7 +25,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.Teleporting
             if (destination == null || !isTeleporterEnabled)
                 return;
 
-            if (other.TryGetComponent(out CharacterMovement characterMovement))
+            if (other.TryGetComponent(out CharacterMotor characterMovement))
             {
                 // If entered collider is using a CharacterMovement component,
                 // disable interpolation and update character position

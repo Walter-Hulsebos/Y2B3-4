@@ -8,9 +8,9 @@ namespace EasyCharacterMovement.CharacterMovementExamples
         [Range(0, 5000)]
         public int spawnCount = 1000;
 
-        public CharacterMovement characterPrefab;
+        public CharacterMotor characterPrefab;
 
-        private readonly List<CharacterMovement> _characters = new List<CharacterMovement>(1024);
+        private readonly List<CharacterMotor> _characters = new List<CharacterMotor>(1024);
 
         private Vector3 _movementDirection;
 
@@ -18,8 +18,8 @@ namespace EasyCharacterMovement.CharacterMovementExamples
         {
             for (int i = _characters.Count - 1; i >= 0; i--)
             {
-                CharacterMovement movement = _characters[i];
-                Destroy(movement.gameObject);
+                CharacterMotor __motor = _characters[i];
+                Destroy(__motor.gameObject);
             }
 
             _characters.Clear();
@@ -35,7 +35,7 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
                 Vector3 pos = firstPos + Vector3.right * row * 2f + Vector3.forward * col * 2f;
 
-                CharacterMovement newChar = Instantiate(characterPrefab);
+                CharacterMotor newChar = Instantiate(characterPrefab);
                 newChar.SetPosition(pos);
 
                 _characters.Add(newChar);
@@ -48,10 +48,10 @@ namespace EasyCharacterMovement.CharacterMovementExamples
 
             for (int i = _characters.Count - 1; i >= 0; i--)
             {
-                CharacterMovement movement = _characters[i];
+                CharacterMotor __motor = _characters[i];
                 
-                movement.RotateTowards(_movementDirection, 540.0f * deltaTime);
-                movement.Move(newVelocity, deltaTime);
+                __motor.RotateTowards(_movementDirection, 540.0f * deltaTime);
+                __motor.Move(newVelocity, deltaTime);
             }
         }
 

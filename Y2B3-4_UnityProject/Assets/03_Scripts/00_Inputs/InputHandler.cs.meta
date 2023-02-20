@@ -1,0 +1,15 @@
+fileFormatVersion: 2
+guid: bb17cdfc70b3a8041b0e7620e54ef48c
+MonoImporter:
+  externalObjects: {}
+  serializedVersion: 2
+  defaultReferences:
+  - moveInputActionReference: {fileID: 6740287480885424194, guid: 0a8cf0b3a21d1a540a6dd8f5f97343e7, type: 3}
+  - dashInputActionReference: {fileID: 7344340980552612455, guid: 0a8cf0b3a21d1a540a6dd8f5f97343e7, type: 3}
+  - primaryFireInputActionReference: {fileID: -4813116327349068454, guid: 0a8cf0b3a21d1a540a6dd8f5f97343e7, type: 3}
+  - secondaryFireInputActionReference: {fileID: -533271173522944404, guid: 0a8cf0b3a21d1a540a6dd8f5f97343e7, type: 3}
+  executionOrder: 0
+  icon: {instanceID: 0}
+  userData: 
+  assetBundleName: 
+  assetBundleVariant: 

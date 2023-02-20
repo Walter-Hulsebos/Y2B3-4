@@ -87,7 +87,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
         /// Cached CharacterMovement component.
         /// </summary>
 
-        public CharacterMovement characterMovement { get; private set; }
+        public CharacterMotor CharacterMotor { get; private set; }
 
         /// <summary>
         /// Desired movement direction vector in world-space.
@@ -136,7 +136,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
             // Determine if the character has landed
 
-            if (!characterMovement.wasOnGround && foundGround.isWalkableGround)
+            if (!CharacterMotor.wasOnGround && foundGround.isWalkableGround)
             {
                 Debug.Log("Landed!");
             }
@@ -243,7 +243,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
             // Character handle left / right rotation (yaw)
 
             if (_yawInput != 0.0f)
-                characterMovement.rotation *= Quaternion.Euler(0.0f, _yawInput, 0.0f);
+                CharacterMotor.rotation *= Quaternion.Euler(0.0f, _yawInput, 0.0f);
 
             _yawInput = 0.0f;
         }
@@ -266,7 +266,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
         private void GroundedMovement(Vector3 desiredVelocity)
         {
-            characterMovement.velocity = Vector3.Lerp(characterMovement.velocity, desiredVelocity,
+            CharacterMotor.velocity = Vector3.Lerp(CharacterMotor.velocity, desiredVelocity,
                 1f - Mathf.Exp(-groundFriction * Time.deltaTime));
         }
 
@@ -278,14 +278,14 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
         {
             // Current character's velocity
 
-            Vector3 velocity = characterMovement.velocity;
+            Vector3 velocity = CharacterMotor.velocity;
 
             // If moving into non-walkable ground, limit its contribution.
             // Allow movement parallel, but not into it because that may push us up.
             
-            if (characterMovement.isOnGround && Vector3.Dot(desiredVelocity, characterMovement.groundNormal) < 0.0f)
+            if (CharacterMotor.isOnGround && Vector3.Dot(desiredVelocity, CharacterMotor.groundNormal) < 0.0f)
             {
-                Vector3 groundNormal = characterMovement.groundNormal;
+                Vector3 groundNormal = CharacterMotor.groundNormal;
                 Vector3 groundNormal2D = groundNormal.onlyXZ().normalized;
 
                 desiredVelocity = desiredVelocity.projectedOnPlane(groundNormal2D);
@@ -315,7 +315,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
             // Update character's velocity
 
-            characterMovement.velocity = velocity;
+            CharacterMotor.velocity = velocity;
         }
 
         /// <summary>
@@ -335,7 +335,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
                 // Set capsule crouching height
 
-                characterMovement.SetHeight(crouchingHeight);
+                CharacterMotor.SetHeight(crouchingHeight);
 
                 // Update Crouching state
 
@@ -355,11 +355,11 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
                 // Check if character can safely stand up
 
-                if (!characterMovement.CheckHeight(standingHeight))
+                if (!CharacterMotor.CheckHeight(standingHeight))
                 {
                     // Character can safely stand up, set capsule standing height
 
-                    characterMovement.SetHeight(standingHeight);
+                    CharacterMotor.SetHeight(standingHeight);
 
                     // Update crouching state
 
@@ -379,17 +379,17 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
         private void Jumping()
         {
-            if (jump && characterMovement.isGrounded)
+            if (jump && CharacterMotor.isGrounded)
             {
                 // Pause ground constraint so character can jump off ground
 
-                characterMovement.PauseGroundConstraint();
+                CharacterMotor.PauseGroundConstraint();
 
                 // perform the jump
 
                 Vector3 jumpVelocity = Vector3.up * jumpImpulse;
 
-                characterMovement.LaunchCharacter(jumpVelocity, true);
+                CharacterMotor.LaunchCharacter(jumpVelocity, true);
             }
         }
 
@@ -407,7 +407,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
             // Update character’s velocity based on its grounding status
 
-            if (characterMovement.isGrounded)
+            if (CharacterMotor.isGrounded)
                 GroundedMovement(desiredVelocity);
             else
                 NotGroundedMovement(desiredVelocity);
@@ -422,7 +422,7 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
             
             // Perform movement using character's current velocity
 
-            characterMovement.Move();
+            CharacterMotor.Move();
         }
 
         /// <summary>
@@ -444,11 +444,11 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
         {
             // Cache CharacterMovement component
 
-            characterMovement = GetComponent<CharacterMovement>();
+            CharacterMotor = GetComponent<CharacterMotor>();
 
             // Enable default physic interactions
 
-            characterMovement.enablePhysicsInteraction = true;
+            CharacterMotor.enablePhysicsInteraction = true;
 
             // Lock and hide cursor
 
@@ -467,8 +467,8 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
             // Subscribe to CharacterMovement events
 
-            characterMovement.FoundGround += OnFoundGround;
-            characterMovement.Collided += OnCollided;
+            CharacterMotor.FoundGround += OnFoundGround;
+            CharacterMotor.Collided += OnCollided;
         }
 
         private void OnDisable()
@@ -480,8 +480,8 @@ namespace EasyCharacterMovement.CharacterMovementWalkthrough.CinemachineFirstPer
 
             // Un-Subscribe from CharacterMovement events
 
-            characterMovement.FoundGround -= OnFoundGround;
-            characterMovement.Collided -= OnCollided;
+            CharacterMotor.FoundGround -= OnFoundGround;
+            CharacterMotor.Collided -= OnCollided;
         }
 
         private IEnumerator LateFixedUpdate()
