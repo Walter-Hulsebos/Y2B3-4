@@ -7,13 +7,6 @@
       "dependencies": {},
       "hash": "73d86259ce31ce7f4dfe1d028ea1c3edf96c23e4"
     },
-    "com.needle.console": {
-      "version": "2.3.14",
-      "depth": 0,
-      "source": "registry",
-      "dependencies": {},
-      "url": "https://package.openupm.com"
-    },
     "com.oscar-gracian.character-movement": {
       "version": "file:Character Movement",
       "depth": 0,

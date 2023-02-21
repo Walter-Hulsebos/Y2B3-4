@@ -1455,6 +1455,8 @@ GameObject:
   - component: {fileID: 1486926474}
   - component: {fileID: 1486926473}
   - component: {fileID: 1486926478}
+  - component: {fileID: 1486926480}
+  - component: {fileID: 1486926479}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -1628,6 +1630,49 @@ MonoBehaviour:
   <DashInput>k__BackingField: 0
   <PrimaryFireInput>k__BackingField: 0
   <SecondaryFireInput>k__BackingField: 0
+--- !u!114 &1486926479
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486926472}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c814e48666f425f44998ba345e156d31, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  inputHandler: {fileID: 1486926478}
+  aimOffset:
+    x: 0
+    y: 1
+    z: 0.75
+  minAimingDistance: 2
+  minAimingDistanceSq: 4
+  maxAimingDistance: 20
+  orientationSpeed: 15
+--- !u!114 &1486926480
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1486926472}
+  m_Enabled: 0
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 87387d8602319284f90153a9e9efd6a6, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  playerCamera: {fileID: 0}
+  rotationRate: 540
+  maxSpeed: 5
+  maxAcceleration: 20
+  groundFriction: 8
+  jumpImpulse: 6.5
+  airFriction: 0.1
+  airControl: 0.3
+  gravity: {x: 0, y: -9.81, z: 0}
+  standingHeight: 2
 --- !u!1 &1611678785
 GameObject:
   m_ObjectHideFlags: 0

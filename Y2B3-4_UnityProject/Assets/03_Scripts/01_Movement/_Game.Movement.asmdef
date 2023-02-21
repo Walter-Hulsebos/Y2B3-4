@@ -6,7 +6,11 @@
         "Unity.InputSystem",
         "UltEvents",
         "UniTask",
-        "EasyCharacterMovement.CharacterMovement"
+        "ProjectDawn.Mathematics",
+        "ProjectDawn.Geometry",
+        "EasyCharacterMovement.CharacterMovement",
+        "Game.Inputs",
+        "Game.Shared"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],
