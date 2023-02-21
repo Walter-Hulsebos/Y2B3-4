@@ -1,6 +1,9 @@
 using System;
+
 using UnityEngine;
 using static Unity.Mathematics.math;
+
+using EasyCharacterMovement;
 
 using Component = Game.Shared.Component;
 using Plane = ProjectDawn.Geometry3D.Plane;
@@ -16,22 +19,37 @@ namespace Game.Movement
     
     public sealed class Orientation : Component
     {
-        [SerializeField, HideInInspector] private InputHandler inputHandler;
-        
+        #region Variables
+
         [SerializeField] private F32x3 aimOffset           = new F32x3(x: 0, y: 1, z: 0.75f);
         [SerializeField] private F32   minAimingDistance   = 2f;
         [SerializeField] private F32   minAimingDistanceSq = 2f * 2f;
         [SerializeField] private F32   maxAimingDistance   = 20f;
         //[SerializeField] private F32   maxAimingDistanceSq = 20f * 20f;
         [SerializeField] private F32   orientationSpeed    = 15f;
+        
+        /// <summary> Cached InputHandler component. </summary>
+        [SerializeField, HideInInspector] private InputHandler inputHandler;
+        /// <summary> Cached CharacterMovement component. </summary>
+        [SerializeField, HideInInspector] private CharacterMotor motor;
+        
+        #endregion
+
+        #region Methods
 
         #if UNITY_EDITOR
         private void Reset()
         {
-            inputHandler = GetComponent<InputHandler>();
-
             minAimingDistanceSq = minAimingDistance * minAimingDistance;
             //maxAimingDistanceSq = maxAimingDistance * maxAimingDistance;
+            
+            inputHandler = GetComponent<InputHandler>();
+            
+            // Cache CharacterMovement component
+            motor = GetComponent<CharacterMotor>();
+
+            // Enable default physic interactions
+            motor.enablePhysicsInteraction = true;
         }
 
         private void OnValidate()
@@ -42,6 +60,15 @@ namespace Game.Movement
             if (inputHandler == null)
             {
                 inputHandler = GetComponent<InputHandler>();
+            }
+            
+            if (motor == null)
+            {
+                // Cache CharacterMovement component
+                motor = GetComponent<CharacterMotor>();
+
+                // Enable default physic interactions
+                motor.enablePhysicsInteraction = true;
             }
         }
 
@@ -144,7 +171,11 @@ namespace Game.Movement
             quaternion __targetRotation = quaternion.LookRotation(forward: __projectedLookDirection, up: up());
 
             transform.rotation = slerp(q1: transform.rotation, q2: __targetRotation, t: orientationSpeed * Time.deltaTime);
+            
+            //motor.RotateTowards(worldDirection: MovementDirection, maxDegreesDelta: rotationRate * Time.deltaTime);
         }
+        
+        #endregion
         
     }
 }

@@ -1,6 +1,23 @@
 using System.Runtime.CompilerServices;
+
 using Unity.Mathematics;
+using UnityEngine;
 using static Unity.Mathematics.math;
+
+//using Plane = ProjectDawn. 
+
+using F32     = System.Single;
+using F32x2   = Unity.Mathematics.float2;
+using F32x3   = Unity.Mathematics.float3;
+using F32x3x3 = Unity.Mathematics.float3x3;
+
+using F64     = System.Double;
+using F64x2   = Unity.Mathematics.double2;
+using F64x3   = Unity.Mathematics.double3;
+using F64x3x3 = Unity.Mathematics.double3x3;
+
+using I32     = System.Int32;
+using quaternion = Unity.Mathematics.quaternion;
 
 namespace ProjectDawn.Mathematics
 {
@@ -12,43 +29,228 @@ namespace ProjectDawn.Mathematics
         /// <summary>
         /// PI multiplied by two.
         /// </summary>
-        public const float PI2 = 6.28318530718F;
-
+        public const F32 TAU_F32 = 6.28318530718f;
         /// <summary>
         /// PI multiplied by two.
         /// </summary>
-        public const double PI2_D = 6.2831853071795864769;
+        public const F64 TAU_F64 = 6.2831853071795864769d;
+        
+        /// <summary> Clamps the given vector's with its length clamped to <param name="maxLength"></param>. </summary>
+        /// <summary> Returns a copy of given vector with its length clamped to <param name="maxLength"></param>. </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static F32x3 SetMaxLength(ref this F32x3 vector, F32 maxLength)
+        {
+            // F32 __sqrMagnitude = lengthsq(vector);
+            // if (__sqrMagnitude <= (maxLength * maxLength)) return vector;
+            //
+            // vector = normalize(vector);
+            // return vector *= maxLength;
+            
+            F32 __sqrMagnitude = dot(vector, vector);
+            if (__sqrMagnitude <= (maxLength * maxLength)) return vector;
+            
+            F32   __magnitude  = sqrt(__sqrMagnitude);
+            vector /= __magnitude;
+            vector *= maxLength;
+            
+            return vector;
+        }
 
+        /// <summary> Sets the given vector's length to <param name="length"></param>. </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static F32x3 SetLength(ref this F32x3 vector, F32 length)
+        {
+            vector = normalize(vector);
+            return vector *= length;
+        }
+        
+        /// <summary> Returns a copy of given vector with its length clamped to <param name="maxLength"></param>. </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static F32x3 WithMaxLength(this F32x3 vector, F32 maxLength)
+        {
+            // F32 __sqrMagnitude = lengthsq(vector);
+            // if (__sqrMagnitude <= (maxLength * maxLength)) return vector;
+            //
+            // F32x3 __normalized = normalize(vector);
+            // return __normalized * maxLength;
+            
+            F32 __sqrMagnitude = dot(vector, vector);
+            if (__sqrMagnitude <= (maxLength * maxLength)) return vector;
+
+            F32   __magnitude  = sqrt(__sqrMagnitude);
+            
+            F32x3 __normalized = vector / __magnitude;
+            return __normalized * maxLength;
+        }
+        
+        /// <summary> Returns a copy of given vector with its length set to <param name="length"></param>. </summary>
+        [MethodImpl(MethodImplOptions.AggressiveInlining)]
+        public static F32x3 WithLength(ref this F32x3 vector, F32 length)
+        {
+            F32x3 __normalized = normalize(vector);
+            return __normalized * length;
+        }
+
+        // public static F32x3 MakeRelativeTo(ref this F32x3 vector, Transform transform)
+        // {
+        //     
+        // }
+        
+        /// <summary> Returns a copy of given vector projected onto a plane defined by a normal orthogonal to the plane. </summary>
+        public static F32x3 ProjectedOnPlane(this F32x3 vector, F32x3 planeNormal)
+        {
+            float3 __projection = dot(vector, planeNormal) / dot(planeNormal, planeNormal) * planeNormal;
+            return vector - __projection;
+        }
+        
+        /// <summary> Returns a copy of given vector projected onto a plane defined by a normal orthogonal to the plane. </summary>
+        public static F32x3 ProjectedOnPlane(this F32x3 vector, Plane plane)
+        {
+            F32x3 __projection = dot(vector, plane.normal) / dot(plane.normal, plane.normal) * plane.normal;
+            return vector - __projection;
+        }
+        
+        /// <summary> Returns a copy of given vector perpendicular to other vector. </summary>
+        public static F32x3 PerpendicularTo(this F32x3 thisVector, F32x3 otherVector)
+        {
+            return normalize(math.cross(thisVector, otherVector));
+        }
+
+        /// <summary>
+        /// Returns a copy of given vector adjusted to be tangent to a specified surface normal relatively to given up axis.
+        /// </summary>
+
+        public static F32x3 TangentTo(this F32x3 vector, F32x3 normal, F32x3 up)
+        {
+            F32x3 __r = vector.PerpendicularTo(up);
+            F32x3 __t = normal.PerpendicularTo(__r);
+
+            return __t * length(vector);
+        }
+
+        /// <summary>
+        /// Transforms a vector to be relative to given transform.
+        /// If isPlanar == true, the transform will be applied on the plane defined by world up axis.
+        /// </summary>
+        public static F32x3 RelativeTo(this F32x3 vector, Transform relativeToThis, bool isPlanar = true)
+        {
+            return RelativeTo(vector: vector, relativeToThis: relativeToThis, upAxis: up(), isPlanar: isPlanar);
+        }
+
+        public static F32x3 MakeRelativeTo(ref this F32x3 vector, Transform relativeToThis, bool isPlanar = true)
+        {
+            return RelativeTo(vector: vector, relativeToThis: relativeToThis, upAxis: up(), isPlanar: isPlanar);
+        }
+        
+        public static F32x3 RelativeToPlanar(this F32x3 vector, F32x3 relativeForward, F32x3 relativeUp, F32x3 upAxis)
+        {
+            relativeForward = relativeForward.ProjectedOnPlane(upAxis);
+
+            if (all(relativeForward == F32x3.zero))
+            {
+                relativeForward = relativeUp.ProjectedOnPlane(upAxis);
+            }
+            
+            quaternion __rotor = quaternion.LookRotation(forward: relativeForward, up: upAxis);
+            return mul(__rotor, vector);
+        }
+        public static F32x3 MakeRelativeToPlanar(ref this F32x3 vector, F32x3 relativeForward, F32x3 relativeUp, F32x3 upAxis)
+        {
+            relativeForward = relativeForward.ProjectedOnPlane(upAxis);
+
+            if (all(relativeForward == F32x3.zero))
+            {
+                relativeForward = relativeUp.ProjectedOnPlane(upAxis);
+            }
+            
+            quaternion __rotor = quaternion.LookRotation(forward: relativeForward, up: upAxis);
+            vector = mul(__rotor, vector);
+
+            return vector;
+        }
+        
+        public static F32x3 RelativeToNonPlanar(this F32x3 vector, F32x3 relativeForward, F32x3 upAxis)
+        {
+            quaternion __rotor = quaternion.LookRotation(forward: relativeForward, up: upAxis);
+            return mul(__rotor, vector);
+        }
+        public static F32x3 MakeRelativeToNonPlanar(ref this F32x3 vector, F32x3 relativeForward, F32x3 upAxis)
+        {
+            quaternion __rotor = quaternion.LookRotation(forward: relativeForward, up: upAxis);
+            vector = mul(__rotor, vector);
+
+            return vector;
+        }
+
+
+        /// <summary>
+        /// Transforms a vector to be relative to given transform.
+        /// If isPlanar == true, the transform will be applied on the plane defined by upAxis.
+        /// </summary>
+        public static F32x3 RelativeTo(this F32x3 vector, Transform relativeToThis, F32x3 upAxis, bool isPlanar = true)
+        {
+            if (isPlanar)
+            {
+                F32x3 __relativeForward = relativeToThis.forward;
+                F32x3 __relativeUp      = relativeToThis.up;
+                return RelativeToPlanar(vector: vector, relativeForward: __relativeForward, relativeUp: __relativeUp, upAxis: upAxis);
+            }
+            else
+            {
+                F32x3 __relativeForward = relativeToThis.forward;
+                return RelativeToNonPlanar(vector: vector, relativeForward: __relativeForward, upAxis: upAxis);
+            }
+        }
+        
+        /// <summary>
+        /// Transforms a vector to be relative to given transform.
+        /// If isPlanar == true, the transform will be applied on the plane defined by upAxis.
+        /// </summary>
+        public static F32x3 MakeRelativeTo(ref this F32x3 vector, Transform relativeToThis, F32x3 upAxis, bool isPlanar = true)
+        {
+            if (isPlanar)
+            {
+                F32x3 __relativeForward = relativeToThis.forward;
+                F32x3 __relativeUp      = relativeToThis.up;
+                return vector.MakeRelativeToPlanar(relativeForward: __relativeForward, relativeUp: __relativeUp, upAxis: upAxis);
+            }
+            else
+            {
+                F32x3 __relativeForward = relativeToThis.forward;
+                return vector.MakeRelativeToNonPlanar(relativeForward: __relativeForward, upAxis: upAxis);
+            }
+        }
+        
         /// <summary>
         /// Returns cross product of two vectors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float2 cross(float2 a, float2 b) => new float2(a.x * b.y,  - a.y * b.x);
+        public static F32x2 cross(F32x2 a, F32x2 b) => new F32x2(a.x * b.y,  -(a.y * b.x));
         /// <summary>
         /// Returns cross product of two vectors.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double2 cross(double2 a, double2 b) => new double2(a.x * b.y,  - a.y * b.x);
+        public static F64x2 cross(F64x2 a, F64x2 b) => new F64x2(a.x * b.y,  -(a.y * b.x));
 
         /// <summary>
         /// Returns determinant of two vectors.
         /// Sum of cross product elements.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float determinant(float2 a, float2 b) => a.x * b.y - a.y * b.x;
+        public static F32 determinant(F32x2 a, F32x2 b) => a.x * b.y - a.y * b.x;
         /// <summary>
         /// Returns determinant of two vectors.
         /// Sum of cross product elements.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double determinant(double2 a, double2 b) => a.x * b.y - a.y * b.x;
+        public static F64 determinant(F64x2 a, F64x2 b) => a.x * b.y - a.y * b.x;
 
         /// <summary>
         /// Returns determinant of two vectors.
         /// Sum of cross product elements.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static float determinant(float3 a, float3 b)
+        public static F32 determinant(F32x3 a, F32x3 b)
         {
             return ((a.y * b.z) - (a.z * b.y)) - ((a.z * b.x) - (a.x * b.z)) + ((a.x * b.y) - (a.y * b.x));
         }
@@ -57,7 +259,7 @@ namespace ProjectDawn.Mathematics
         /// Sum of cross product elements.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static double determinant(double3 a, double3 b)
+        public static F64 determinant(F64x3 a, F64x3 b)
         {
             return ((a.y * b.z) - (a.z * b.y)) - ((a.z * b.x) - (a.x * b.z)) + ((a.x * b.y) - (a.y * b.x));
         }
@@ -66,52 +268,52 @@ namespace ProjectDawn.Mathematics
         /// Returns true if points ordered counter clockwise.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool iscclockwise(float2 a, float2 b, float2 c) => determinant(c - a, b - a) < 0;
+        public static bool iscclockwise(F32x2 a, F32x2 b, F32x2 c) => determinant(c - a, b - a) < 0;
         /// <summary>
         /// Returns true if points ordered counter clockwise.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool iscclockwise(float3 a, float3 b, float3 c) => determinant(c - a, b - a) < 0;
+        public static bool iscclockwise(F32x3 a, F32x3 b, F32x3 c) => determinant(c - a, b - a) < 0;
         
         /// <summary>
         /// Returns true if points ordered counter clockwise.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool iscclockwise(double2 a, double2 b, double2 c) => determinant(c - a, b - a) < 0;
+        public static bool iscclockwise(F64x2 a, F64x2 b, F64x2 c) => determinant(c - a, b - a) < 0;
         /// <summary>
         /// Returns true if points ordered counter clockwise.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool iscclockwise(double3 a, double3 b, double3 c) => determinant(c - a, b - a) < 0;
+        public static bool iscclockwise(F64x3 a, F64x3 b, F64x3 c) => determinant(c - a, b - a) < 0;
         
         /// <summary>
         /// Returns true if points ordered clockwise.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool isclockwise(float2 a, float2 b, float2 c) => determinant(c - a, b - a) > 0;
+        public static bool isclockwise(F32x2 a, F32x2 b, F32x2 c) => determinant(c - a, b - a) > 0;
         /// <summary>
         /// Returns true if points ordered clockwise.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool isclockwise(float3 a, float3 b, float3 c) => determinant(c - a, b - a) > 0;
+        public static bool isclockwise(F32x3 a, F32x3 b, F32x3 c) => determinant(c - a, b - a) > 0;
         
         /// <summary>
         /// Returns true if points ordered clockwise.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool isclockwise(double2 a, double2 b, double2 c) => determinant(c - a, b - a) > 0;
+        public static bool isclockwise(F64x2 a, F64x2 b, F64x2 c) => determinant(c - a, b - a) > 0;
         /// <summary>
         /// Returns true if points ordered clockwise.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool isclockwise(double3 a, double3 b, double3 c) => determinant(c - a, b - a) > 0;
+        public static bool isclockwise(F64x3 a, F64x3 b, F64x3 c) => determinant(c - a, b - a) > 0;
 
 
         /// <summary>
         /// Returns true if valid triangle exists knowing three edge lengths.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool istriangle(float a, float b, float c)
+        public static bool istriangle(F32 a, F32 b, F32 c)
         {
             // Sum of two triangle edge is always lower than third
             return all(new bool3(
@@ -123,7 +325,7 @@ namespace ProjectDawn.Mathematics
         /// Returns true if valid triangle exists knowing three edge lengths.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool istriangle(double a, double b, double c)
+        public static bool istriangle(F64 a, F64 b, F64 c)
         {
             // Sum of two triangle edge is always lower than third
             return all(new bool3(
@@ -137,22 +339,22 @@ namespace ProjectDawn.Mathematics
         /// Based on https://en.wikipedia.org/wiki/Delaunay_triangulation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool isdelaunay(float2 a, float2 b, float2 c, float2 d)
+        public static bool isdelaunay(F32x2 a, F32x2 b, F32x2 c, F32x2 d)
         {
-            float2 ad = a - d;
-            float2 bd = b - d;
-            float2 cd = c - d;
+            F32x2 ad = a - d;
+            F32x2 bd = b - d;
+            F32x2 cd = c - d;
 
-            float2 d2 = d * d;
+            F32x2 d2 = d * d;
 
-            float2 ad2 = a * a - d2;
-            float2 bd2 = b * b - d2;
-            float2 cd2 = c * c - d2;
+            F32x2 ad2 = a * a - d2;
+            F32x2 bd2 = b * b - d2;
+            F32x2 cd2 = c * c - d2;
 
-            float determinant = math.determinant(new float3x3(
-                new float3(ad.x, ad.y, ad2.x + ad2.y),
-                new float3(bd.x, bd.y, bd2.x + bd2.y),
-                new float3(cd.x, cd.y, cd2.x + cd2.y)
+            F32 determinant = math.determinant(new F32x3x3(
+                new F32x3(ad.x, ad.y, ad2.x + ad2.y),
+                new F32x3(bd.x, bd.y, bd2.x + bd2.y),
+                new F32x3(cd.x, cd.y, cd2.x + cd2.y)
                 ));
 
             return determinant >= 0;
@@ -162,22 +364,22 @@ namespace ProjectDawn.Mathematics
         /// Based on https://en.wikipedia.org/wiki/Delaunay_triangulation.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static bool isdelaunay(double2 a, double2 b, double2 c, double2 d)
+        public static bool isdelaunay(F64x2 a, F64x2 b, F64x2 c, F64x2 d)
         {
-            double2 ad = a - d;
-            double2 bd = b - d;
-            double2 cd = c - d;
+            F64x2 ad = a - d;
+            F64x2 bd = b - d;
+            F64x2 cd = c - d;
 
-            double2 d2 = d * d;
+            F64x2 d2 = d * d;
 
-            double2 ad2 = a * a - d2;
-            double2 bd2 = b * b - d2;
-            double2 cd2 = c * c - d2;
+            F64x2 ad2 = a * a - d2;
+            F64x2 bd2 = b * b - d2;
+            F64x2 cd2 = c * c - d2;
 
-            double determinant = math.determinant(new double3x3(
-                new double3(ad.x, ad.y, ad2.x + ad2.y),
-                new double3(bd.x, bd.y, bd2.x + bd2.y),
-                new double3(cd.x, cd.y, cd2.x + cd2.y)
+            F64 determinant = math.determinant(new F64x3x3(
+                new F64x3(ad.x, ad.y, ad2.x + ad2.y),
+                new F64x3(bd.x, bd.y, bd2.x + bd2.y),
+                new F64x3(cd.x, cd.y, cd2.x + cd2.y)
             ));
 
             return determinant >= 0;
@@ -188,11 +390,11 @@ namespace ProjectDawn.Mathematics
         /// Based on https://en.wikipedia.org/wiki/Factorial.
         /// </summary>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static int factorial(int value)
+        public static I32 factorial(I32 value)
         {
-            int factorial = 1;
-            int count = value + 1;
-            for (int i = 1; i < count; ++i)
+            I32 factorial = 1;
+            I32 count = value + 1;
+            for (I32 i = 1; i < count; ++i)
                 factorial *= i;
             return factorial;
         }

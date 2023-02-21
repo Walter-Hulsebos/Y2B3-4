@@ -7,6 +7,7 @@ using JetBrains.Annotations;
 
 using F32   = System.Single;
 using F32x2 = Unity.Mathematics.float2;
+using F32x3 = Unity.Mathematics.float3;
 
 namespace Game.Inputs
 {
@@ -33,6 +34,7 @@ namespace Game.Inputs
         [SerializeField, HideInInspector] private InputAction secondaryFireInputAction;
 
         [field:SerializeField] public F32x2                   MoveInput          { get; private set; }
+        //[field:SerializeField] public F32x3                   MoveInputFlat      { get; private set; }
         [field:SerializeField] public Boolean                 DashInput          { get; private set; }
         [field:SerializeField] public Boolean                 PrimaryFireInput   { get; private set; }
         [field:SerializeField] public Boolean                 SecondaryFireInput { get; private set; }
@@ -138,6 +140,7 @@ namespace Game.Inputs
         private void OnMoveInputStarted(InputAction.CallbackContext ctx)
         {
             MoveInput = ctx.ReadValue<Vector2>();
+            //MoveInputFlat.xz = MoveInput;
         }
         private void OnMoveInputPerformed(InputAction.CallbackContext ctx)
         {

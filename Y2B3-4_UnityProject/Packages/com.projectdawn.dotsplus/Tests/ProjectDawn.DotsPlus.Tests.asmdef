@@ -9,7 +9,9 @@
         "Unity.Burst",
         "Unity.Mathematics",
         "UnityEngine.TestRunner",
-        "UnityEditor.TestRunner"
+        "UnityEditor.TestRunner",
+        "Unity.PerformanceTesting",
+        "BoundfoxStudios.FluentAssertions"
     ],
     "includePlatforms": [
         "Editor"
