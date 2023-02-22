@@ -4,6 +4,8 @@ using UnityEngine;
 using static Unity.Mathematics.math;
 
 using EasyCharacterMovement;
+using JetBrains.Annotations;
+using UltEvents;
 
 #if ODIN_INSPECTOR
 using Sirenix.OdinInspector;
@@ -61,15 +63,28 @@ namespace Game.Movement
 
         #endregion
 
+        #region Events
+
+        #if ODIN_INSPECTOR
+        [field: FoldoutGroup(groupName: "Events", expanded: false)]
+        #endif
+        [field: SerializeField] public UltEvent OnLanded { get; [UsedImplicitly] private set; } = new UltEvent();
+        
+        #if ODIN_INSPECTOR
+        [field: FoldoutGroup(groupName: "Events", expanded: false)]
+        #endif
+        [field: SerializeField] public UltEvent<F32x3> OnMove { get; [UsedImplicitly] private set; } = new UltEvent<F32x3>();
+
+        #endregion
+
         #region EVENT HANDLERS
 
         /// <summary>
         /// Collided event handler.
         /// </summary>
-
         private void OnCollided(ref CollisionResult inHit)
         {
-            Debug.Log(message: $"{name} collided with: {inHit.collider.name}");
+            //Debug.Log(message: $"{name} collided with: {inHit.collider.name}");
         }
 
         /// <summary>
@@ -78,13 +93,12 @@ namespace Game.Movement
 
         private void OnFoundGround(ref FindGroundResult foundGround)
         {
-            Debug.Log(message: "Found ground...");
+            //Debug.Log(message: "Found ground...");
 
             // Determine if the character has landed
-
             if (!motor.wasOnGround && foundGround.isWalkableGround)
             {
-                Debug.Log(message: "Landed!");
+                OnLanded?.Invoke();
             }
         }
 
@@ -209,19 +223,17 @@ namespace Game.Movement
             // If moving...
             if (all(desiredVelocity != F32x3.zero))
             {
-                // Accelerate horizontal velocity towards desired velocity
-
                 F32x3 __flatVelocity = new F32x3(x: __velocity.x, y: 0,            z: __velocity.z);
-                F32x3 __upVelocity   = new F32x3(x: 0,            y: __velocity.y, z: 0);
+                F32x3 __verVelocity   = new F32x3(x: 0,            y: __velocity.y, z: 0);
 
+                // Accelerate horizontal velocity towards desired velocity
                 F32x3 __horizontalVelocity = Vector3.MoveTowards(
                     current: __flatVelocity, 
                     target: desiredVelocity,
                     maxDistanceDelta: maxAcceleration * airControl * Time.deltaTime);
 
                 // Update velocity preserving gravity effects (vertical velocity)
-                
-                __velocity = __horizontalVelocity + __upVelocity;
+                __velocity = __horizontalVelocity + __verVelocity;
             }
 
             // Apply gravity
@@ -245,10 +257,11 @@ namespace Game.Movement
             
             // Make Sure it won't move faster diagonally
             __moveDirection.SetMaxLength(1.0f);
-            // Make movementDirection relative to camera view direction
-            __moveDirection = __moveDirection.RelativeTo(playerCamera.transform);
             
-            Vector3 __desiredVelocity = (__moveDirection * maxSpeed);
+            // Make movementDirection relative to camera view direction
+            F32x3 __moveDirectionRelativeToCamera = __moveDirection.RelativeTo(playerCamera.transform);
+            
+            Vector3 __desiredVelocity = (__moveDirectionRelativeToCamera * maxSpeed);
 
             // Update character’s velocity based on its grounding status
             if (motor.isGrounded)
@@ -259,7 +272,9 @@ namespace Game.Movement
             {
                 NotGroundedMovement(desiredVelocity: __desiredVelocity);
             }
-
+            
+            OnMove?.Invoke(__moveDirection);
+            
             // Perform movement using character's current velocity
             motor.Move();
         }

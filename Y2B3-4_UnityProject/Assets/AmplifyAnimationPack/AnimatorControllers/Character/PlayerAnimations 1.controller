@@ -13,8 +13,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: -8419830490192817221}
   - {fileID: -1999580124865349206}
-  m_StateMachineBehaviours:
-  - {fileID: -6615499266836112779}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -207,8 +206,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: -3004098778589161778}
   - {fileID: 7428440542237727049}
-  m_StateMachineBehaviours:
-  - {fileID: -6138596112512790458}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -293,8 +291,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 755190312495757677}
   - {fileID: 745710076272948114}
-  m_StateMachineBehaviours:
-  - {fileID: -7360999671324213795}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -386,8 +383,7 @@ AnimatorState:
   - {fileID: -1918627218080561227}
   - {fileID: 4125780207008836072}
   - {fileID: -980401390375439331}
-  m_StateMachineBehaviours:
-  - {fileID: 7501640565055224928}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -579,8 +575,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 3209708863339709027}
   - {fileID: 2658115492368958772}
-  m_StateMachineBehaviours:
-  - {fileID: -6391355932610300900}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -1117,7 +1112,7 @@ AnimatorController:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: PlayerAnimations
+  m_Name: PlayerAnimations 1
   serializedVersion: 5
   m_AnimatorParameters:
   - m_Name: MovementType
@@ -1125,157 +1120,157 @@ AnimatorController:
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: InteractionType
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: CombatAction
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: ClimbAction
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: CrawlAction
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: CoverAction
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: PushAction
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: HitDirection
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: Speed
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: InputFwd
+    m_Controller: {fileID: 0}
+  - m_Name: Forward
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
-  - m_Name: InputRight
+    m_Controller: {fileID: 0}
+  - m_Name: Right
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: TargetDir
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: TimeToStop
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: canLand
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: jumpTime
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: canComboAttack
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: comboIndex
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: HangReachArmSign
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: CrawlRollSide
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: BarHangAction
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: BarWalkAction
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: HangReachHor
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: HangReachVert
     m_Type: 1
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: LocomotionType
     m_Type: 3
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: Ladder_IsSliding
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   - m_Name: Ladder_WillEnterDown
     m_Type: 4
     m_DefaultFloat: 0
     m_DefaultInt: 0
     m_DefaultBool: 0
-    m_Controller: {fileID: 9100000}
+    m_Controller: {fileID: 0}
   m_AnimatorLayers:
   - serializedVersion: 5
     m_Name: Base Layer
@@ -1471,8 +1466,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Speed
     m_Mirror: 0
-  m_BlendParameter: InputRight
-  m_BlendParameterY: InputFwd
+  m_BlendParameter: Right
+  m_BlendParameterY: Forward
   m_MinThreshold: 0
   m_MaxThreshold: 1
   m_UseAutomaticThresholds: 1
@@ -1565,8 +1560,8 @@ BlendTree:
     m_CycleOffset: 0
     m_DirectBlendParameter: Speed
     m_Mirror: 0
-  m_BlendParameter: InputRight
-  m_BlendParameterY: InputFwd
+  m_BlendParameter: Right
+  m_BlendParameterY: Forward
   m_MinThreshold: 0
   m_MaxThreshold: 1
   m_UseAutomaticThresholds: 1
@@ -6231,8 +6226,7 @@ AnimatorState:
   - {fileID: 1101004266133835404}
   - {fileID: 1101685488888163176}
   - {fileID: 1101715826511178090}
-  m_StateMachineBehaviours:
-  - {fileID: 114817633561471744}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -6314,8 +6308,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 1101595373253309436}
   - {fileID: 7598968486137404790}
-  m_StateMachineBehaviours:
-  - {fileID: 114751669392476332}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 0
   m_WriteDefaultValues: 0
@@ -6425,6 +6418,12 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions:
+  - first: {fileID: 1789826442177080249}
+    second:
+    - {fileID: 887574012635244818}
+  - first: {fileID: 1107379674156124174}
+    second:
+    - {fileID: 1109029569790227482}
   - first: {fileID: 1107261851812988160}
     second:
     - {fileID: 1109920212152925030}
@@ -6433,12 +6432,6 @@ AnimatorStateMachine:
     - {fileID: 1109507134928651606}
     - {fileID: 1109952112702494332}
     - {fileID: -5133083581980854806}
-  - first: {fileID: 1107379674156124174}
-    second:
-    - {fileID: 1109029569790227482}
-  - first: {fileID: 1789826442177080249}
-    second:
-    - {fileID: 887574012635244818}
   - first: {fileID: 4595344292110928345}
     second:
     - {fileID: -3593187652209224197}
@@ -6504,18 +6497,18 @@ AnimatorStateMachine:
   - first: {fileID: 1107183717284569488}
     second:
     - {fileID: 1109948331552394160}
+  - first: {fileID: 1107855544787488820}
+    second:
+    - {fileID: 1109901908860968282}
+    - {fileID: 1109251700257886656}
+  - first: {fileID: 1107734766974764800}
+    second:
+    - {fileID: 1109855185310228804}
   - first: {fileID: 1107622627553544468}
     second:
     - {fileID: 1109051613414148242}
     - {fileID: 1109877486960214006}
     - {fileID: 1109416613127501496}
-  - first: {fileID: 1107734766974764800}
-    second:
-    - {fileID: 1109855185310228804}
-  - first: {fileID: 1107855544787488820}
-    second:
-    - {fileID: 1109901908860968282}
-    - {fileID: 1109251700257886656}
   m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: -252, y: 0, z: 0}
   m_EntryPosition: {x: -24, y: 132, z: 0}
@@ -6623,8 +6616,7 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
-  m_StateMachineBehaviours:
-  - {fileID: 114160929556890500}
+  m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 384, y: 480, z: 0}
   m_EntryPosition: {x: -12, y: 180, z: 0}
   m_ExitPosition: {x: 576, y: 120, z: 0}
@@ -6649,8 +6641,7 @@ AnimatorStateMachine:
   m_AnyStateTransitions: []
   m_EntryTransitions: []
   m_StateMachineTransitions: {}
-  m_StateMachineBehaviours:
-  - {fileID: 114035250041661032}
+  m_StateMachineBehaviours: []
   m_AnyStatePosition: {x: 276, y: -144, z: 0}
   m_EntryPosition: {x: 50, y: 120, z: 0}
   m_ExitPosition: {x: 756, y: 288, z: 0}
@@ -7790,8 +7781,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 5927380174122280231}
   - {fileID: -7433151200058808192}
-  m_StateMachineBehaviours:
-  - {fileID: -6405143808536460065}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -7923,8 +7913,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: 6419430896267377129}
   - {fileID: 7642609950383259854}
-  m_StateMachineBehaviours:
-  - {fileID: 2624678596827012670}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -8066,8 +8055,7 @@ AnimatorState:
   m_CycleOffset: 0
   m_Transitions:
   - {fileID: 3420329560735139593}
-  m_StateMachineBehaviours:
-  - {fileID: -4511561190627379405}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
@@ -8459,8 +8447,7 @@ AnimatorState:
   m_Transitions:
   - {fileID: -3819115572351288140}
   - {fileID: -357056728444291537}
-  m_StateMachineBehaviours:
-  - {fileID: 4962192813445057090}
+  m_StateMachineBehaviours: []
   m_Position: {x: 50, y: 50, z: 0}
   m_IKOnFeet: 1
   m_WriteDefaultValues: 1
