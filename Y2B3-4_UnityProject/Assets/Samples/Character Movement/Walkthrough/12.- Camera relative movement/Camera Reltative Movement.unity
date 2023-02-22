@@ -1624,9 +1624,10 @@ MonoBehaviour:
   minAimingDistance: 2
   minAimingDistanceSq: 4
   maxAimingDistance: 20
-  orientationSpeed: 15
+  orientationSpeed: 25
   inputHandler: {fileID: 1486926478}
   motor: {fileID: 1486926474}
+  camera: {fileID: 350005705}
 --- !u!114 &1486926480
 MonoBehaviour:
   m_ObjectHideFlags: 0

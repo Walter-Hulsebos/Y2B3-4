@@ -9,6 +9,7 @@
         "ProjectDawn.Mathematics",
         "ProjectDawn.Geometry",
         "EasyCharacterMovement.CharacterMovement",
+        "ALINE",
         "Game.Inputs",
         "Game.Shared",
         "Game.Utils"

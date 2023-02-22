@@ -1,5 +1,5 @@
 using System;
-
+using Drawing;
 using UnityEngine;
 using static Unity.Mathematics.math;
 
@@ -22,12 +22,12 @@ namespace Game.Movement
     {
         #region Variables
 
-        [SerializeField] private F32x3 aimOffset           = new F32x3(x: 0, y: 1, z: 0.75f);
-        [SerializeField] private F32   minAimingDistance   = 2f;
-        [SerializeField] private F32   minAimingDistanceSq = 2f * 2f;
-        [SerializeField] private F32   maxAimingDistance   = 20f;
+        //[SerializeField] private F32x3 aimOffset           = new F32x3(x: 0, y: 1, z: 0.75f);
+        //[SerializeField] private F32   minAimingDistance   = 2f;
+        //[SerializeField] private F32   minAimingDistanceSq = 2f * 2f;
+        //[SerializeField] private F32   maxAimingDistance   = 20f;
         //[SerializeField] private F32   maxAimingDistanceSq = 20f * 20f;
-        [SerializeField] private F32   orientationSpeed    = 15f;
+        [SerializeField] private F32   orientationSpeed    = 25f;
         
         /// <summary> Cached InputHandler component. </summary>
         [SerializeField, HideInInspector] private InputHandler inputHandler;
@@ -43,7 +43,7 @@ namespace Game.Movement
         #if UNITY_EDITOR
         private void Reset()
         {
-            minAimingDistanceSq = minAimingDistance * minAimingDistance;
+            //minAimingDistanceSq = minAimingDistance * minAimingDistance;
             //maxAimingDistanceSq = maxAimingDistance * maxAimingDistance;
             
             FindInputHandlerReference();
@@ -55,7 +55,7 @@ namespace Game.Movement
 
         private void OnValidate()
         {
-            minAimingDistanceSq = minAimingDistance * minAimingDistance;
+            //minAimingDistanceSq = minAimingDistance * minAimingDistance;
             //maxAimingDistanceSq = maxAimingDistance * maxAimingDistance;
             
             if (inputHandler == null)
@@ -110,26 +110,26 @@ namespace Game.Movement
             }
         }
 
-        private void OnDrawGizmos()
-        {
-            DrawAimingGizmos();    
-        }
+        // private void OnDrawGizmos()
+        // {
+        //     DrawAimingGizmos();    
+        // }
+        //
+        // /// <summary>
+        // /// Draw gizmos visualising the point to aim at in the scene view
+        // /// </summary>
+        // private void DrawAimingGizmos()
+        // {
+        //     F32x3 __aimOrigin = AimOrigin;
+        //     F32x3 __aimPoint  = AimPoint;
+        //
+        //     Gizmos.color = Color.red;
+        //     Debug.DrawLine(start: __aimOrigin, end: __aimPoint, color: Color.red);
+        //     Gizmos.DrawWireSphere(center: __aimPoint, radius: 0.2f);
+        // }
         #endif
-        
-        /// <summary>
-        /// Draw gizmos visualising the point to aim at in the scene view
-        /// </summary>
-        private void DrawAimingGizmos()
-        {
-            F32x3 __aimOrigin = AimOrigin;
-            F32x3 __aimPoint  = AimPoint;
 
-            Gizmos.color = Color.red;
-            Debug.DrawLine(start: __aimOrigin, end: __aimPoint, color: Color.red);
-            Gizmos.DrawWireSphere(center: __aimPoint, radius: 0.2f);
-        }
 
-        
         private F32x3 _cachedLookPosition = F32x3.zero;
         private F32x3 LookPosition
         {
@@ -142,16 +142,22 @@ namespace Game.Movement
                 Ray __ray = camera.ScreenPointToRay(pos: __mouseScreenPosition);
                 
                 //Cast ray to the ground plane
-                Plane __groundPlane3D = new Plane(inNormal: Vector3.up, d: 0);
+                Plane __groundPlane = new Plane(inNormal: Vector3.up, inPoint: WorldPos);
 
-                Boolean __rayHasHit = __groundPlane3D.Raycast(ray: __ray, enter: out F32 __hitDistance);
-                
-                Debug.DrawRay(start: __ray.origin, dir: __ray.direction * min(__hitDistance, 10), Color.yellow);
+                Boolean __rayHasHit = __groundPlane.Raycast(ray: __ray, enter: out F32 __hitDistance);
+
+                //Debug.DrawRay(start: __ray.origin, dir: __ray.direction * min(__hitDistance, 10), Color.yellow);
                 
                 if (__rayHasHit)
                 {
                     _cachedLookPosition = __ray.GetPoint(distance: __hitDistance);
                 }
+                
+                Draw.SolidCircleXZ(center: WorldPos,            radius: 0.25f, color: Color.yellow);
+                Draw.SolidCircleXZ(center: _cachedLookPosition, radius: 0.25f, color: Color.yellow);
+                Draw.Line(a: WorldPos, b: _cachedLookPosition, color: Color.yellow);
+                
+                //Debug.DrawLine(start: );
 
                 return _cachedLookPosition;
             }
@@ -159,70 +165,70 @@ namespace Game.Movement
 
         private void Update()
         {
-            OrientTowards(LookPosition);
+            OrientTowardsPos(LookPosition);
         }
 
-        /// <summary>
-        /// Returns the point to aim at. A raycast is shot from the aim origin in the forward direction of the player. The hit point is used as the point to aim at.
-        /// </summary>
-        private F32x3 AimPoint
+        // /// <summary>
+        // /// Returns the point to aim at. A raycast is shot from the aim origin in the forward direction of the player. The hit point is used as the point to aim at.
+        // /// </summary>
+        // private F32x3 AimPoint
+        // {
+        //     get
+        //     {
+        //         F32x3 __aimOrigin = AimOrigin;
+        //
+        //         if (!Physics.Raycast(origin: __aimOrigin, direction: Forward, hitInfo: out RaycastHit __hitInfo, maxDistance: maxAimingDistance))
+        //         {
+        //             return (AimOrigin + Forward * maxAimingDistance);
+        //         }
+        //         
+        //         F32x3 __hitPoint = __hitInfo.point;
+        //         
+        //         F32   __distanceToHitSq = distancesq(__aimOrigin, __hitPoint);
+        //
+        //         Boolean __isPastMinAimingDistance = (__distanceToHitSq >= minAimingDistanceSq);
+        //
+        //         if (__isPastMinAimingDistance)
+        //         {
+        //             return __hitPoint;
+        //         }
+        //
+        //         return (AimOrigin + Forward * minAimingDistance);
+        //     }
+        // }
+        //
+        // /// <summary>
+        // /// The origin point used to determine the point to aim at
+        // /// </summary>
+        // /// <returns></returns>
+        // private F32x3 AimOrigin
+        // {
+        //     get
+        //     {
+        //         F32x3 __offset = (Right * aimOffset.x) + (Up * aimOffset.y) + (Forward * aimOffset.z);
+        //
+        //         return WorldPos + __offset;   
+        //     }
+        // }
+        public void OrientTowardsPos(F32x3 lookPosition)
         {
-            get
-            {
-                F32x3 __aimOrigin = AimOrigin;
-
-                if (!Physics.Raycast(origin: __aimOrigin, direction: Forward, hitInfo: out RaycastHit __hitInfo, maxDistance: maxAimingDistance))
-                {
-                    return (AimOrigin + Forward * maxAimingDistance);
-                }
-                
-                F32x3 __hitPoint = __hitInfo.point;
-                
-                F32   __distanceToHitSq = distancesq(__aimOrigin, __hitPoint);
-
-                Boolean __isPastMinAimingDistance = (__distanceToHitSq >= minAimingDistanceSq);
-
-                if (__isPastMinAimingDistance)
-                {
-                    return __hitPoint;
-                }
-
-                return (AimOrigin + Forward * minAimingDistance);
-            }
+            F32x3 __lookDirection = (lookPosition - WorldPos);
+            
+            OrientTowardsDir(lookDirection: __lookDirection);;
         }
         
-        /// <summary>
-        /// The origin point used to determine the point to aim at
-        /// </summary>
-        /// <returns></returns>
-        private F32x3 AimOrigin
-        {
-            get
-            {
-                F32x3 __offset = (Right * aimOffset.x) + (Up * aimOffset.y) + (Forward * aimOffset.z);
-
-                return WorldPos + __offset;   
-            }
-        }
-        
-        /// <summary>
-        /// Orients the player towards the given position
-        /// </summary>
-        /// <param name="lookPosition"></param>
-        public void OrientTowards(F32x3 lookPosition)
+        public void OrientTowardsDir(F32x3 lookDirection)
         {
             Plane3D __plane3D = new Plane3D(normal: up(), distance: 0);
             
-            F32x3 __lookDirection = (lookPosition - (F32x3)transform.position);
+            F32x3 __projectedLookDirection = normalize(__plane3D.Projection(point: lookDirection));
             
-            F32x3 __projectedLookDirection = normalize(__plane3D.Projection(point: __lookDirection));
-            
-            //if(lengthsq(__projectedLookDirection) == 0) return;
-            if (all(__projectedLookDirection == F32x3.zero)) return;
+            if (lengthsq(__projectedLookDirection) == 0) return;
+            //if (all(__projectedLookDirection == F32x3.zero)) return;
             
             quaternion __targetRotation = quaternion.LookRotation(forward: __projectedLookDirection, up: up());
 
-            transform.rotation = slerp(q1: transform.rotation, q2: __targetRotation, t: orientationSpeed * Time.deltaTime);
+            Rot = slerp(q1: Rot, q2: __targetRotation, t: orientationSpeed * Time.deltaTime);
             
             //motor.RotateTowards(worldDirection: MovementDirection, maxDegreesDelta: rotationRate * Time.deltaTime);
         }
