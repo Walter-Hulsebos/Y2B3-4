@@ -3,7 +3,6 @@ using UnityEngine;
 using Unity.Mathematics;
 using static Unity.Mathematics.math;
 using static ProjectDawn.Mathematics.math2;
-using Plane = ProjectDawn.Geometry3D.Plane;
 using Unity.Collections;
 
 namespace ProjectDawn.Geometry3D
@@ -121,7 +120,7 @@ namespace ProjectDawn.Geometry3D
         /// <summary>
         /// Returns true if shapes surfaces overlap.
         /// </summary>
-        public static unsafe bool OverlapPlaneAndBox(Plane plane, Box box)
+        public static unsafe bool OverlapPlaneAndBox(Plane3D plane, Box box)
         {
             float3 min = box.Min;
             float3 max = box.Max;

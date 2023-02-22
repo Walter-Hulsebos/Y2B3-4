@@ -4,18 +4,19 @@ using UnityEngine;
 using static Unity.Mathematics.math;
 
 using EasyCharacterMovement;
-
-using Component = Game.Shared.Component;
-using Plane = ProjectDawn.Geometry3D.Plane;
+using ProjectDawn.Geometry3D;
 
 using F32   = System.Single;
 using F32x2 = Unity.Mathematics.float2;
 using F32x3 = Unity.Mathematics.float3;
 using quaternion = Unity.Mathematics.quaternion;
+using Ray = UnityEngine.Ray;
 
 namespace Game.Movement
 {
     using Game.Inputs;
+    using Component  = Game.Shared.Component;
+    using Extensions = Game.Utils.Extensions;
     
     public sealed class Orientation : Component
     {
@@ -32,6 +33,8 @@ namespace Game.Movement
         [SerializeField, HideInInspector] private InputHandler inputHandler;
         /// <summary> Cached CharacterMovement component. </summary>
         [SerializeField, HideInInspector] private CharacterMotor motor;
+        /// <summary> Cached Camera Transform. </summary>
+        [SerializeField, HideInInspector] private new Camera camera;
         
         #endregion
 
@@ -43,13 +46,11 @@ namespace Game.Movement
             minAimingDistanceSq = minAimingDistance * minAimingDistance;
             //maxAimingDistanceSq = maxAimingDistance * maxAimingDistance;
             
-            inputHandler = GetComponent<InputHandler>();
+            FindInputHandlerReference();
             
-            // Cache CharacterMovement component
-            motor = GetComponent<CharacterMotor>();
+            FindMotorReference();
 
-            // Enable default physic interactions
-            motor.enablePhysicsInteraction = true;
+            FindCameraReference();
         }
 
         private void OnValidate()
@@ -59,16 +60,53 @@ namespace Game.Movement
             
             if (inputHandler == null)
             {
-                inputHandler = GetComponent<InputHandler>();
+                FindInputHandlerReference();
             }
             
             if (motor == null)
             {
-                // Cache CharacterMovement component
-                motor = GetComponent<CharacterMotor>();
+                FindMotorReference();
+            }
+            
+            if (camera == null)
+            {
+                FindCameraReference();
+            }
+        }
 
-                // Enable default physic interactions
-                motor.enablePhysicsInteraction = true;
+        private void FindInputHandlerReference()
+        {
+            inputHandler = GetComponent<InputHandler>();
+        }
+        
+        private void FindMotorReference()
+        {
+            // Cache CharacterMovement component
+            motor = GetComponent<CharacterMotor>();
+
+            // Enable default physic interactions
+            motor.enablePhysicsInteraction = true;
+        }
+
+        private void FindCameraReference()
+        {
+            Camera __mainCamera = Camera.main;
+            if(__mainCamera == null)
+            {
+                Boolean __foundUnTaggedCamera = Extensions.TryFindObjectOfType(out __mainCamera);
+                if (__foundUnTaggedCamera)
+                {
+                    Debug.LogWarning(message: "There was a Camera found in the scene, but it's not tagged as \"MainCamera\", if there is supposed to be one, tag it correctly.", context: this);
+                    camera = __mainCamera;
+                }
+                else
+                {
+                    Debug.LogError(message: $"No Camera found in the scene. Please add one to the scene. and Reset this {nameof(Orientation)}", context: this);
+                }
+            }
+            else
+            {
+                camera = __mainCamera;
             }
         }
 
@@ -91,23 +129,37 @@ namespace Game.Movement
             Gizmos.DrawWireSphere(center: __aimPoint, radius: 0.2f);
         }
 
+        
+        private F32x3 _cachedLookPosition = F32x3.zero;
+        private F32x3 LookPosition
+        {
+            get
+            {
+                //Get Mouse Position Screen-Space
+                Vector3 __mouseScreenPosition = inputHandler.MouseScreenPosition;
+                
+                //Create ray from the camera to the mouse position
+                Ray __ray = camera.ScreenPointToRay(pos: __mouseScreenPosition);
+                
+                //Cast ray to the ground plane
+                Plane __groundPlane3D = new Plane(inNormal: Vector3.up, d: 0);
+
+                Boolean __rayHasHit = __groundPlane3D.Raycast(ray: __ray, enter: out F32 __hitDistance);
+                
+                Debug.DrawRay(start: __ray.origin, dir: __ray.direction * min(__hitDistance, 10), Color.yellow);
+                
+                if (__rayHasHit)
+                {
+                    _cachedLookPosition = __ray.GetPoint(distance: __hitDistance);
+                }
+
+                return _cachedLookPosition;
+            }
+        }
+
         private void Update()
         {
-            
-        }
-        
-        /// <summary>
-        /// Rotates the player to the given look direction
-        /// </summary>
-        /// <param name="lookInput"></param>
-        public void Rotate(Vector2 lookInput)
-        {
-            F32x3 __lookDirection = normalize(new F32x3(lookInput.x, 0, lookInput.y));
-
-            if (all(__lookDirection != F32x3.zero))
-            {
-                OrientTowards(lookPosition: WorldPos + __lookDirection);
-            }
+            OrientTowards(LookPosition);
         }
 
         /// <summary>
@@ -159,11 +211,11 @@ namespace Game.Movement
         /// <param name="lookPosition"></param>
         public void OrientTowards(F32x3 lookPosition)
         {
-            Plane __plane = new Plane(normal: up(), distance: 0);
+            Plane3D __plane3D = new Plane3D(normal: up(), distance: 0);
             
             F32x3 __lookDirection = (lookPosition - (F32x3)transform.position);
             
-            F32x3 __projectedLookDirection = normalize(__plane.Projection(point: __lookDirection));
+            F32x3 __projectedLookDirection = normalize(__plane3D.Projection(point: __lookDirection));
             
             //if(lengthsq(__projectedLookDirection) == 0) return;
             if (all(__projectedLookDirection == F32x3.zero)) return;

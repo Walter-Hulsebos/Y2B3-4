@@ -15,7 +15,7 @@ namespace ProjectDawn.Geometry3D
     /// </remarks>
     [DebuggerDisplay("Normal = {Normal}, Distance = {Distance}")]
     [Serializable]
-    public struct Plane
+    public struct Plane3D
     {
         /// <summary>
         /// A plane in the form Ax + By + Cz + Dw = 0.
@@ -31,7 +31,7 @@ namespace ProjectDawn.Geometry3D
         /// </summary>
         /// <remarks>
         /// It is assumed that the normal is unit length.  If you set a new plane such that Ax + By + Cz + Dw = 0 but
-        /// (A, B, C) is not unit length, then you must normalize the plane by calling <see cref="Normalize(Plane)"/>.
+        /// (A, B, C) is not unit length, then you must normalize the plane by calling <see cref="Normalize(Plane3D)"/>.
         /// </remarks>
         public float3 Normal
         {
@@ -44,7 +44,7 @@ namespace ProjectDawn.Geometry3D
         /// </summary>
         /// <remarks>
         /// It is assumed that the normal is unit length.  If you set a new plane such that Ax + By + Cz + Dw = 0 but
-        /// (A, B, C) is not unit length, then you must normalize the plane by calling <see cref="Normalize(Plane)"/>.
+        /// (A, B, C) is not unit length, then you must normalize the plane by calling <see cref="Normalize(Plane3D)"/>.
         /// </remarks>
         public float Distance
         {
@@ -55,7 +55,7 @@ namespace ProjectDawn.Geometry3D
         /// <summary>
         /// Flips the plane so the normal points in the opposite direction.
         /// </summary>
-        public Plane Flipped => new Plane { NormalAndDistance = -NormalAndDistance };
+        public Plane3D Flipped => new Plane3D { NormalAndDistance = -NormalAndDistance };
 
         /// <summary>
         /// Constructs a Plane from arbitrary coefficients A, B, C, D of the plane equation Ax + By + Cz + Dw = 0.
@@ -68,7 +68,7 @@ namespace ProjectDawn.Geometry3D
         /// <param name="coefficientC">Coefficient C from plane equation.</param>
         /// <param name="coefficientD">Coefficient D from plane equation.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane(float coefficientA, float coefficientB, float coefficientC, float coefficientD)
+        public Plane3D(float coefficientA, float coefficientB, float coefficientC, float coefficientD)
         {
             NormalAndDistance = Normalize(new float4(coefficientA, coefficientB, coefficientC, coefficientD));
         }
@@ -83,7 +83,7 @@ namespace ProjectDawn.Geometry3D
         /// <param name="distance">Distance from the origin along the normal.  A negative value moves the plane in the
         /// same direction as the normal while a positive value moves it in the opposite direction.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane(float3 normal, float distance)
+        public Plane3D(float3 normal, float distance)
         {
             NormalAndDistance = Normalize(new float4(normal, distance));
         }
@@ -97,7 +97,7 @@ namespace ProjectDawn.Geometry3D
         /// <param name="normal">A non-zero vector that is perpendicular to the plane.  It may be any length.</param>
         /// <param name="pointInPlane">A point that lies in the plane.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane(float3 normal, float3 pointInPlane)
+        public Plane3D(float3 normal, float3 pointInPlane)
         : this(normal, -math.dot(normal, pointInPlane))
         {
         }
@@ -112,7 +112,7 @@ namespace ProjectDawn.Geometry3D
         /// <param name="vector2InPlane">A non-zero vector that lies in the plane.  It may be any length and must not be a scalar multiple of <paramref name="vector1InPlane"/>.</param>
         /// <param name="pointInPlane">A point that lies in the plane.</param>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public Plane(float3 vector1InPlane, float3 vector2InPlane, float3 pointInPlane)
+        public Plane3D(float3 vector1InPlane, float3 vector2InPlane, float3 pointInPlane)
         : this(math.cross(vector1InPlane, vector2InPlane), pointInPlane)
         {
         }
@@ -129,9 +129,9 @@ namespace ProjectDawn.Geometry3D
         /// same direction as the normal while a positive value moves it in the opposite direction.</param>
         /// <returns>Normalized Plane constructed from given inputs.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Plane CreateFromUnitNormalAndDistance(float3 unitNormal, float distance)
+        public static Plane3D CreateFromUnitNormalAndDistance(float3 unitNormal, float distance)
         {
-            return new Plane { NormalAndDistance = new float4(unitNormal, distance) };
+            return new Plane3D { NormalAndDistance = new float4(unitNormal, distance) };
         }
 
         /// <summary>
@@ -145,9 +145,9 @@ namespace ProjectDawn.Geometry3D
         /// <param name="pointInPlane">A point that lies in the plane.</param>
         /// <returns>Normalized Plane constructed from given inputs.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Plane CreateFromUnitNormalAndPointInPlane(float3 unitNormal, float3 pointInPlane)
+        public static Plane3D CreateFromUnitNormalAndPointInPlane(float3 unitNormal, float3 pointInPlane)
         {
-            return new Plane { NormalAndDistance = new float4(unitNormal, -math.dot(unitNormal, pointInPlane)) };
+            return new Plane3D { NormalAndDistance = new float4(unitNormal, -math.dot(unitNormal, pointInPlane)) };
         }
 
         /// <summary>
@@ -156,9 +156,9 @@ namespace ProjectDawn.Geometry3D
         /// <param name="plane">Plane to normalize.</param>
         /// <returns>Normalized Plane.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static Plane Normalize(Plane plane)
+        public static Plane3D Normalize(Plane3D plane)
         {
-            return new Plane { NormalAndDistance = Normalize(plane.NormalAndDistance) };
+            return new Plane3D { NormalAndDistance = Normalize(plane.NormalAndDistance) };
         }
 
         /// <summary>
@@ -173,7 +173,7 @@ namespace ProjectDawn.Geometry3D
         public static float4 Normalize(float4 planeCoefficients)
         {
             float recipLength = math.rsqrt(math.lengthsq(planeCoefficients.xyz));
-            return new Plane { NormalAndDistance = planeCoefficients * recipLength };
+            return new Plane3D { NormalAndDistance = planeCoefficients * recipLength };
         }
 
         /// <summary>
@@ -211,12 +211,12 @@ namespace ProjectDawn.Geometry3D
         }
 
         /// <summary>
-        /// Implicitly converts a <see cref="Plane"/> to <see cref="float4"/>.
+        /// Implicitly converts a <see cref="Plane3D"/> to <see cref="float4"/>.
         /// </summary>
         /// <param name="plane">Plane to convert.</param>
         /// <returns>A <see cref="float4"/> representing the plane.</returns>
         [MethodImpl(MethodImplOptions.AggressiveInlining)]
-        public static implicit operator float4(Plane plane) => plane.NormalAndDistance;
+        public static implicit operator float4(Plane3D plane) => plane.NormalAndDistance;
 
         [Conditional("ENABLE_UNITY_COLLECTIONS_CHECKS")]
         void CheckPlaneIsNormalized()

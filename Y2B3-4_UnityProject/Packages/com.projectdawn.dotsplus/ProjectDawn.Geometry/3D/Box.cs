@@ -136,7 +136,7 @@ namespace ProjectDawn.Geometry3D
         /// <summary>
         /// Returns true if shapes surfaces overlap.
         /// </summary>
-        public bool Overlap(Plane plane) => ShapeUtility.OverlapPlaneAndBox(plane, this);
+        public bool Overlap(Plane3D plane) => ShapeUtility.OverlapPlaneAndBox(plane, this);
 
         /// Returns true if shapes surfaces overlap.
         /// </summary>

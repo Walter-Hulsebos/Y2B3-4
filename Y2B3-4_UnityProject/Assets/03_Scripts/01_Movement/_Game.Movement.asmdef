@@ -10,7 +10,8 @@
         "ProjectDawn.Geometry",
         "EasyCharacterMovement.CharacterMovement",
         "Game.Inputs",
-        "Game.Shared"
+        "Game.Shared",
+        "Game.Utils"
     ],
     "includePlatforms": [],
     "excludePlatforms": [],

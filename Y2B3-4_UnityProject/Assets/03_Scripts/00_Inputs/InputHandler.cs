@@ -38,8 +38,7 @@ namespace Game.Inputs
         [field:SerializeField] public Boolean                 DashInput          { get; private set; }
         [field:SerializeField] public Boolean                 PrimaryFireInput   { get; private set; }
         [field:SerializeField] public Boolean                 SecondaryFireInput { get; private set; }
-        
-        public static Vector2                                 MousePosition => Mouse.current.position.ReadValue();
+        public Vector2                                        MouseScreenPosition => Mouse.current.position.ReadValue();
         
         #endregion
 
